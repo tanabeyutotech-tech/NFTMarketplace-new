@@ -23,35 +23,74 @@ export const mintAndListNFT = async (tokenURI, nft_price, category) => {
     signer
   );
 
+  console.log(`get contract `);
 
-  const tx = await contract.mint(
-    await signer.getAddress(),
-    tokenURI);
-    await tx.wait();
+  // await contract.setMarketplace(MARKETPLACE_ADDRESS);
 
-    const nextTokenId = await contract.nextTokenId();
-    const tokenId = Number(nextTokenId - 1n);
+  console.log(`setmarketpalce `);
 
-    const approveTx = await contract.approve(
-    MARKETPLACE_ADDRESS,
-    tokenId
-    );
-    await approveTx.wait();    
+  // const tx = await contract.mint(
+  //   await signer.getAddress(),
+  //   tokenURI);
+  //   await tx.wait();
+
+    // const nextTokenId = await contract.nextTokenId();
+    // const tokenId = Number(nextTokenId - 1n);
+
+    // const approveTx = await contract.approve(
+    // MARKETPLACE_ADDRESS,
+    // tokenId
+    // );
+    // await approveTx.wait();    
 
     const marketplace = new ethers.Contract(
     MARKETPLACE_ADDRESS,
     MarketplaceArtifact.abi,
     signer
     );
+    const ty = await contract.setApprovalForAll(MARKETPLACE_ADDRESS, true);
+    await ty.wait();
 
-    const priceInEth = "1"; // example
+    console.log(`marketpalce `);
+
     const price = ethers.parseEther(nft_price);
+    console.log(`price: ${price} `);
 
-    const listTx = await marketplace.ListNFT(
-    NFT_ADDRESS,
-    tokenId,
-    price
+    const tx = await marketplace.mintAndListNFT(
+      NFT_ADDRESS,
+      tokenURI,
+      price
     );
-    await listTx.wait();
+    console.log(`marketpalceAdreess : ${MARKETPLACE_ADDRESS} `);
+
+    await tx.wait();
+    // const tx = await marketplace.mintAndListNFT(
+    //   NFT_ADDRESS,
+    //   tokenURI,
+    //   price
+    // );
+
+    // const priceInEth = "1"; // example
+
+    // const listTx = await marketplace.ListNFT(
+    // NFT_ADDRESS,
+    // tokenId,
+    // price
+    // );
+    // await listTx.wait();
     
+};
+
+export const approveMarketplace = async () => {
+  const provider = new ethers.BrowserProvider(window.ethereum);
+  const signer = await provider.getSigner();
+
+  const nft = new ethers.Contract(
+    NFT_ADDRESS,
+    NFTArtifact.abi,
+    signer
+  );
+
+  const tx = await nft.setApprovalForAll(MARKETPLACE_ADDRESS, true);
+  await tx.wait();
 };

@@ -1,29 +1,31 @@
 const hre = require("hardhat");
-const { ethers } = require("hardhat");
+const { ethers } = hre;
 
-async function main(){
-    const [buyer] = await ethers.getSigners();
+async function main() {
+  const [deployer] = await ethers.getSigners();
+  console.log("Deployer:", deployer.address);
 
-    const NFT_ADDRESS = "0xECB55a2Cf50Bb2b7A247a17A086bDf70c18613EA";
-    const MARKETPLACE_ADDRESS = "0xF0D8D32157C5388250e593Eb5EBe577F83BB7E88";
+  // 1️⃣ Deploy NFT
+  const NFT = await ethers.getContractFactory("NFT");
+  const nft = await NFT.deploy();
+  await nft.waitForDeployment();
+  const nftAddress = await nft.getAddress();
+  console.log("NFT deployed to:", nftAddress);
 
-    const marketplace = await ethers.getContractAt("NFTMarketplace", MARKETPLACE_ADDRESS);
-    
-    const tokenId = 7;
-    console.log("NFT purchased by");
-    // buy the NFt
-    // you must send the correct amount of ETH Listed in the marketplace
-    const listing = await marketplace.listings(NFT_ADDRESS, tokenId);
-    const price = listing.price;
+  // 2️⃣ Deploy Marketplace
+  const Marketplace = await ethers.getContractFactory("NFTMarketplace");
+  const marketplace = await Marketplace.deploy();
+  await marketplace.waitForDeployment();
+  const marketplaceAddress = await marketplace.getAddress();
+  console.log("Marketplace deployed to:", marketplaceAddress);
 
-    const tx = await marketplace.buyNFT(NFT_ADDRESS, tokenId, { value : price });
-    await tx.wait();
-
-    console.log("NFT purchased by", buyer.address);
-
+  // 3️⃣ Link NFT → Marketplace (CRITICAL)
+  const tx = await nft.setMarketplace(marketplaceAddress);
+  await tx.wait();
+  console.log("Marketplace set in NFT contract");
 }
 
 main().catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-})
+  console.error(error);
+  process.exit(1);
+});

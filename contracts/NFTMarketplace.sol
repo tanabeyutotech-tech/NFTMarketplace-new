@@ -86,7 +86,7 @@ contract NFTMarketplace is ReentrancyGuard {
         );
 
         // approve marketplace
-        IToken(_nft).approve(address(this), tokenId);
+        // IToken(_nft).approve(address(this    ), tokenId);
 
         // store listing
         listings[_nft][tokenId] = Listing({
