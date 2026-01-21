@@ -12,6 +12,7 @@ const CreateModal = ({ onClose, onMinted }) => {
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [preview, setPreview] = useState(null);
 
   // close on ESC
   useEffect(() => {
@@ -76,9 +77,23 @@ const CreateModal = ({ onClose, onMinted }) => {
             type="file"
             accept="image/*"
             hidden
-            onChange={(e) => setFile(e.target.files[0])}
+            onChange={(e) => {
+              const selected = e.target.files[0];
+              if (!selected) return;
+              setFile(selected);
+              setPreview(URL.createObjectURL(selected));
+
+            }}
           />
         </label>
+
+        <div className="image-preview">
+          {preview ? (
+            <img src={preview} alt="NFT Preview" />
+          ) : (
+            <span>No image selected</span>
+          )}
+        </div>
 
         {/* NFT Name */}
         <input
