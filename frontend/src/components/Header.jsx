@@ -9,7 +9,10 @@ export default function Header({ onConnect, onCreate, onWalletConnect, onWalletd
 
    useEffect(() => {
     const savedWallet = localStorage.getItem("walletAddress");
-    if (savedWallet) setWallet(savedWallet);
+    if (savedWallet) {
+      setWallet(savedWallet);
+      onWalletConnect();
+    }
   }, []);
 
   async function connectWallet() {

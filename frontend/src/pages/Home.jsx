@@ -15,7 +15,10 @@ import { getContracts } from "../web3/getContracts";
 
 export default function Home({ walletOpen, onClose, walletConected, minted, mintedCallBack }) {
     const [selectedNFT, setSelectedNFT] = useState(null);
+    const [common_NFTs, setCommonNFTs] = useState([]);
+    const [myNFTs, setMydNFTs] = useState([]);
 
+    
     function handleSellClick(nft) {
         setSelectedNFT(nft);
     }
@@ -29,13 +32,6 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
         if (!window.ethereum) return;
 
         try {
-        // const provider = new ethers.BrowserProvider(window.ethereum);
-        // const signer = await provider.getSigner();
-        // const nft = new ethers.Contract(
-        //     NFT_ADDRESS,
-        //     NFTArtifact.abi,
-        //     signer
-        // );
             const provider = new ethers.BrowserProvider(window.ethereum);
             const signer = await provider.getSigner();
 
@@ -82,8 +78,7 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
         }
         closeModal();
     }
-    const [common_NFTs, setCommonNFTs] = useState([]);
-    const [myNFTs, setMydNFTs] = useState([]);
+
 
     function ipfsToHttp(ipfsUrl) {
         if (!ipfsUrl) return "";
@@ -99,8 +94,9 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
 
     useEffect(() => {
         if (walletConected) {
-            console.log(`walletRender`);
+            console.log(`walletRender :${walletConected}`);
             fetchListedNFTs();
+
         }
     }, [walletConected]);
 
@@ -111,10 +107,6 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
             mintedCallBack();
         }
     }, [minted]);
-
-    async function getMetaMaskInfo(){
-
-    }
 
     async function buyNFT(NFT_ADDRESS, tokenId, priceInEth) {
         if (!window.ethereum) return;
@@ -153,7 +145,7 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
 
     }    
 
-    async function fetchListedNFTs() {
+    async function fetchListedNFTs(k) {
         console.log(`fetch function`);
         if (!window.ethereum) return;
 
@@ -248,59 +240,6 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
     sortOrder === "desc" ? b.volume - a.volume : a.volume - b.volume
     );
     
-    const nftData = [
-    {
-        id: 1,
-        name: "Cyber Ape #24",
-        image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe",
-        price: 1.25,
-        creator: "cryptoking",
-        creatorAvatar: "https://i.pravatar.cc/100?img=11",
-        category: "Art",
-        buyNow: true,
-        auction: false,
-    },
-    {
-        id: 2,
-        title: "Rare Bunny",
-        image: "https://picsum.photos/400/400?random=2",
-        price: "0.6 ETH",
-        category: "Games",
-        buyNow: true,
-        auction: false,
-    },
-    {
-        id: 3,
-        name: "Meta City",
-        image: "https://picsum.photos/400/400?random=3",
-        price: "3.9 ETH",
-        creator: "darknft",
-        category: "Games",
-        buyNow: true,
-        auction: false,
-    },
-    {
-        id: 4,
-        name: "Pixel Punk",
-        image: "https://picsum.photos/400/400?random=4",
-        price: "0.8 ETH",
-        creator: "darknft",
-        category: "Music",
-        buyNow: true,
-        auction: true,
-    },
-    {
-        id: 5,
-        name: "AI Dreamscape",
-        image: "https://picsum.photos/400/400?random=5",
-        price: "5.2 ETH",
-        creator: "darknft",
-        category: "Photography",
-        buyNow: false,
-        auction: true,
-    },
-    
-];
     const [minting, setMinting] = useState(false);
 
     const [showMintModal, setShowMintModal] = useState(false);
@@ -398,27 +337,29 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
             {/* Main Content */}
             <section className="flex-1 space-y-14">
 
-                {/* <my NFTs /> */}
-                <div>
-                    <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-xl font-semibold">My NFTs</h2>
+                {/* <my NFTs />         */
+                   walletConected && (
+                    <div>
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-xl font-semibold">My NFTs</h2>
+                        </div>
+                        {
+                            <NFTCardPanel 
+                                filteredNFTs={myNFTs.slice(0,4)}
+                                placeholder={"Sell"}
+                                onSell={handleSellClick}
+                            />
+                        }
+                        {
+                            <SellModal
+                                nft={selectedNFT}
+                                onClose={closeModal}
+                                onConfirm={confirmSell}
+                            />
+                        }
+                        
                     </div>
-                    {
-                        <NFTCardPanel 
-                            filteredNFTs={myNFTs.slice(0,4)}
-                            placeholder={"Sell"}
-                            onSell={handleSellClick}
-                        />
-                    }
-                    {
-                        <SellModal
-                            nft={selectedNFT}
-                            onClose={closeModal}
-                            onConfirm={confirmSell}
-                        />
-                    }
-                    
-                </div>
+                )}
 
                 {/* <TrendingNFTs /> */}
                 <div  className="space-y-6 ">
