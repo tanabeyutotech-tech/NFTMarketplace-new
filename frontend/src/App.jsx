@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import Home from "./pages/Home";
 import Collections from "./pages/Collections";
 import CollectionDetail from "./pages/CollectionDetail";
+import CreateCollection from "./pages/CreateCollection";
 import WalletModal from "./components/WalletModal";
 import CreateModal from "./components/CreateModal";
 
@@ -37,6 +38,7 @@ export default function App() {
 
             >
             </Route>
+            <Route path="/collections/create" element={<CreateCollection />} />
           </Routes>
           {showModal && (
             <CreateModal

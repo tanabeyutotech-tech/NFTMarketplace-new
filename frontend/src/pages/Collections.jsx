@@ -30,7 +30,12 @@ export default function Collections() {
   return (
     <div className="px-6 py-10 mx-auto max-w-7xl">
       <h1 className="mb-8 text-3xl font-bold text-cyan-300">Collections</h1>
-
+      <Link
+            to="/collections/create"
+            className="inline-block px-6 py-3 mb-6 font-semibold text-black rounded-xl bg-cyan-500 hover:bg-cyan-400"
+            >
+            + Create Collection
+      </Link>
       <div className="grid grid-cols-3 gap-6 md:grid-cols-2 sm:grid-cols-1">
         {collections.map((col) => (
           <Link
