@@ -38,11 +38,12 @@ export default function Header({ onConnect, onCreate, onWalletConnect, onWalletd
 
   return (
     <>
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-neutral-950/80 backdrop-blur">
+    <header className="sticky top-0 z-50 bg-gradient-to-r from-[#0b1220] via-[#0e1a3a] to-[#0b1220]   border-b border-cyan-500/20
+          shadow-lg shadow-cyan-500/10 backdrop-blur">
       <div className="mx-auto max-w-[1800px] px-6 py-4 flex items-center justify-between">
 
         {/* Logo */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 ">
           <div className="rounded-full h-9 w-9 bg-gradient-to-tr from-indigo-500 to-purple-600" />
           <span className="text-xl font-semibold">NFT Marketplace</span>
         </div>

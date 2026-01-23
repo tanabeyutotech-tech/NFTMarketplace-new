@@ -255,9 +255,9 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
 
     return (
         <>
-        <div className="mx-auto max-w-[2000px] px-6 py-10">
+        <div className="mx-auto max-w-[2000px] px-6 py-10 min-h-screen bg-gradient-to-br from-[#020617] via-[#020b2a] to-[#020617]">
         <div className="flex gap-[40px]">
-            <aside className="w-[300px] shrink-0 rounded-2xl bg-white/5 p-5 transition hover:bg-white/10 hidden lg:block ">
+            <aside className="w-[300px] shrink-0 rounded-2xl bg-gradient-to-b from-[#0e1a3a] to-[#0a1025]  border-r border-indigo-500/10 shadow-lg shadow-blue-900/40 p-5 transition hover:bg-white/10 hidden lg:block ">
                 <div className="sticky top-24 space-y-8 rounded-xl bg-[#12172a] p-5">
                     <div>
                     <h3 className="mb-4 text-sm font-semibold tracking-wide uppercase text-white/60">
@@ -315,7 +315,7 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
                     </div>
 
                     {/* Chains */}
-                    <div>
+                    {/* <div>
                     <h3 className="mb-4 text-sm font-semibold tracking-wide uppercase text-white/60">
                         Chains
                     </h3>
@@ -329,18 +329,18 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
                         </div>
                         ))}
                     </div>
-                    </div>
+                    </div> */}
 
                 </div>
             </aside>
 
             {/* Main Content */}
-            <section className="flex-1 space-y-14">
+            <section className="flex-1 space-y-14  bg-gradient-to-br from-[#020617] via-[#020b2a] to-[#020617]">
 
                 {/* <my NFTs />         */
                    walletConected && (
-                    <div>
-                        <div className="flex items-center justify-between mb-6">
+                    <div className=" bg-gradient-to-r from-[#071a3a] to-[#050c1f] rounded-3xl p-6 shadow-lg shadow-indigo-500/10">
+                        <div className="flex items-center justify-between mb-6 ">
                             <h2 className="text-xl font-semibold">My NFTs</h2>
                         </div>
                         {
@@ -362,14 +362,13 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
                 )}
 
                 {/* <TrendingNFTs /> */}
-                <div  className="space-y-6 ">
-                    <h2 className="text-xl font-semibold">🔥 Trending NFTs</h2>
+                <div  className="space-y-6 text-slate-200 bg-gradient-to-r from-[#061f2f] to-[#020617] rounded-3xl p-6 shadow-lg shadow-cyan-500/10">
+                    <h2 className="text-xl font-semibold text-cyan-300 ">🔥 Trending NFTs</h2>
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {filteredNFTs.map((nft) => (
                         <div
                             key={nft.tokenId}
-                            className="rounded-xl bg-[#12172a] overflow-hidden hover:scale-[1.02] transition"
-                        >
+                            className="rounded-2xl bg-gradient-to-b from-[#0b1d3a] to-[#050c1f] border border-cyan-500/10  shadow-lg shadow-cyan-500/10 overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-cyan-500/30">
                             {/* Image */}
                             <img
                             src={nft.image}
@@ -442,7 +441,7 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
                     </div>
                 </div>
                 {/* <Latest NFTs /> */}
-                <div>
+                <div className="bg-gradient-to-r from-[#041b1a] to-[#020617]  rounded-3xl p-6 shadow-lg shadow-emerald-500/10">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-xl font-semibold">Latest NFTs</h2>
                         <button className="text-sm text-indigo-400 hover:text-indigo-300">
