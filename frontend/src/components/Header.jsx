@@ -1,5 +1,6 @@
 import WalletModal from "./WalletModal";
 import {useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 // , { onCreate } onWalletRerender
 export default function Header({ onConnect, onCreate, onWalletConnect, onWalletdisConnect}) {
   const [showModal, setShowModal] = useState(false);
@@ -51,7 +52,9 @@ export default function Header({ onConnect, onCreate, onWalletConnect, onWalletd
         {/* Navigation */}
         <nav className="hidden gap-8 text-sm md:flex text-white/70">
           <button className="cursor-pointer hover:text-white">Explore</button>
-          <button className="cursor-pointer hover:text-white">Collections</button>
+          <button className="cursor-pointer hover:text-white"><Link to="/" className="hover:text-cyan-300">Home</Link></button>
+          <button className="cursor-pointer hover:text-white"><Link to="/collections" className="hover:text-cyan-300">Collections</Link></button>
+
           <button onClick={onCreate}  className="cursor-pointer hover:text-white">Create</button>
         </nav>
 

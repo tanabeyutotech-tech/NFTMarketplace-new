@@ -25,9 +25,18 @@ export default function NFTCard({nft, placehoder, onSell,}) {
 
         {/* Hover Overlay */}
         <div className="absolute inset-0 flex items-center justify-center transition opacity-0 bg-black/60 group-hover:opacity-100">
-          <button onClick={() => onSell(nft)} className="px-6 py-2 text-sm font-semibold bg-blue-600 rounded-full hover:bg-blue-500">
-            {placehoder}
-          </button>
+          {
+            nft.tokenId===-10 ?  (          
+                <button className="px-6 py-2 text-sm font-semibold bg-blue-600 rounded-full hover:bg-blue-500">
+                    no nfts
+                </button>) :
+                 (          
+                    <button onClick={() => onSell(nft)} className="px-6 py-2 text-sm font-semibold bg-blue-600 rounded-full hover:bg-blue-500">
+                      {placehoder}
+                    </button>
+                 )
+          }
+
         </div>
       </div>
 

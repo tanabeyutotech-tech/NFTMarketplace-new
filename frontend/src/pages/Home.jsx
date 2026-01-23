@@ -109,7 +109,7 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
         }
     }, [minted]);
 
-    async function buyNFT(NFT_ADDRESS, tokenId, priceInEth) {
+    async function buyNFT(NFT) {
         if (!window.ethereum) return;
 
         const provider = new ethers.BrowserProvider(window.ethereum);
@@ -127,12 +127,10 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
         );
         console.log(`signer, nft: ${nft.nextTokenId()}`);
         // 3. Convert price to wei
-        const price = ethers.parseEther(priceInEth.toString());
-        console.log(`price: ${price}`);
+        const price = ethers.parseEther(NFT.price.toString());
         console.log(`price: ${NFT_ADDRESS}`);
-        console.log(`price: ${tokenId}`);
         // // 4. Call buyNFT
-        const tx = await marketplace.buyNFT(NFT_ADDRESS, tokenId, {
+        const tx = await marketplace.buyNFT(NFT_ADDRESS, NFT.tokenId, {
             value: price,
         });
         // console.log("Transaction sent:", tx.hash);
@@ -143,7 +141,6 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
         // alert("NFT bought successfully!");
         await fetchListedNFTs();
         console.log("Rerendered");
-
     }    
 
     async function fetchListedNFTs(k) {
@@ -215,6 +212,18 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
         // const jj = Number(nextTokenId);
         // console.log(`nft property: ${common_items.at(1).price}`);
 
+        // if(my_items.length == 0){
+        //     my_items.push({
+        //         tokenId: -10,
+        //         image: "https://cdn-icons-png.flaticon.com/512/825/825500.png"
+        //     });
+        // }
+        // if(common_items.length == 0){
+        //     common_items.push({
+        //         tokenId: -10,
+        //         image: "https://cdn-icons-png.flaticon.com/512/825/825500.png"
+        //     });
+        // }
         setMydNFTs(my_items);
         setCommonNFTs(common_items);
         // console.log(`item num:  ${jj}`);
@@ -346,7 +355,7 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
                         </div>
                         {
                             <NFTCardPanel 
-                                filteredNFTs={myNFTs.slice(0,4)}
+                                filteredNFTs={myNFTs}
                                 placeholder={"Sell"}
                                 onSell={handleSellClick}
                             />
@@ -365,9 +374,9 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
                 {/* <TrendingNFTs /> */}
 
                  {
-                    filteredNFTs.map((nft) => (
-                    <TrendCardPanel nft={nft}/>
-                    ))
+                    // filteredNFTs.map((nft) => (
+                    <TrendCardPanel nfts={filteredNFTs} onBuy={buyNFT}/>
+                    // ))
                     // <TrendCardPanel /> 
                 }
                 {/* <TopCollectors /> */}
