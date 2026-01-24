@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { fetchCollections } from "../web3/fetchCollections";
+
 export default function Collections() {
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,6 +28,7 @@ export default function Collections() {
   return (
     <div className="px-6 py-10 mx-auto max-w-7xl">
       <h1 className="mb-8 text-3xl font-bold text-cyan-300">Collections</h1>
+
       <Link
             to="/collections/create"
             className="inline-block px-6 py-3 mb-6 font-semibold text-black rounded-xl bg-cyan-500 hover:bg-cyan-400"
@@ -42,6 +44,7 @@ export default function Collections() {
           >
             <img
               src={col.cover}
+              onError={(e) => (e.target.src = "/placeholder.png")}
               alt={col.name}
               className="object-cover w-full h-48 mb-4 rounded-xl"
             />
