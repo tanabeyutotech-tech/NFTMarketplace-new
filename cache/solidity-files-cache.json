@@ -2439,7 +2439,7 @@
       ]
     },
     "E:\\software\\blockChainPro.24.3.50\\contracts\\Token.sol": {
-      "lastModificationDate": 1769201185788,
+      "lastModificationDate": 1769222471062,
       "contentHash": "03371607d53388ed7f440e5784b893be",
       "sourceName": "contracts/Token.sol",
       "solcConfig": {
@@ -2514,6 +2514,38 @@
       "artifacts": [
         "Ownable"
       ]
+    },
+    "E:\\software\\blockChainPro.24.3.50\\contracts\\NFTFactory.sol": {
+      "lastModificationDate": 1769222123380,
+      "contentHash": "4cad2a9221988ee4cd1386514711beef",
+      "sourceName": "contracts/NFTFactory.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [],
+      "artifacts": []
     }
   }
 }
