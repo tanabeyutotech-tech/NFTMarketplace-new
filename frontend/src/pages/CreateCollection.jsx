@@ -1,47 +1,47 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getFactoryContract } from "../web3/factory";
 
 export default function CreateCollection() {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
+  const [symbol, setSymbol] = useState("");
   const [description, setDescription] = useState("");
   const [cover, setCover] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleCreate(e) {
     e.preventDefault();
-    setLoading(true);
 
-    // simulate wallet address (later replace with wagmi / ethers)
-    const creator = "0xCREATOR_WALLET";
+    if (!name || !symbol || !cover) {
+      alert("Name, Symbol, and Cover are required");
+      return;
+    }
 
-    const slug = name
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9-]/g, "");
+    try {
+      setLoading(true);
 
-    const newCollection = {
-      id: Date.now(),
-      name,
-      slug,
-      description,
-      cover,
-      creator,
-      createdAt: new Date().toISOString(),
-    };
+      // connect to factory
+      const factory = await getFactoryContract();
 
-    // TEMP storage (later: blockchain / backend)
-    const existing =
-      JSON.parse(localStorage.getItem("collections")) || [];
+      // deploy new NFT collection
+      const tx = await factory.createCollection(
+        name,
+        symbol,
+        cover
+      );
 
-    localStorage.setItem(
-      "collections",
-      JSON.stringify([...existing, newCollection])
-    );
+      await tx.wait();
 
-    setLoading(false);
-    navigate("/collections");
+      alert("Collection created on blockchain!");
+      navigate("/collections");
+    } catch (err) {
+      console.error(err);
+      alert("Transaction failed");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -66,6 +66,18 @@ export default function CreateCollection() {
           />
         </div>
 
+        <div>
+          <label className="block mb-1 text-slate-400">
+            Symbol
+          </label>
+          <input
+            required
+            value={symbol}
+            onChange={(e) => setSymbol(e.target.value)}
+            className="w-full p-3 text-white rounded-xl bg-black/40"
+          />
+        </div>
+        
         <div>
           <label className="block mb-1 text-slate-400">
             Description
