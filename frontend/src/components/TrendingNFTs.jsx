@@ -1,8 +1,10 @@
 import NFTCard from "./NFTCard";
 
 export default function TrendingNFTs({nfts,nft, onBuy}) {
+
     if(nfts.length == 0)
     {
+        console.log(`trendinglength" ${nfts.length}`);
         nfts.push({
             tokenId: -10,
             image: "https://cdn-icons-png.flaticon.com/512/825/825500.png"

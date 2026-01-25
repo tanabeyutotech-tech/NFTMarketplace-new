@@ -5,6 +5,7 @@ export default function NFTCardPanel({
 }) {
     if(filteredNFTs.length == 0)
     {
+        console.log(`nftcardpanel: ${filteredNFTs.length}`);
         filteredNFTs.push({
             tokenId: -10,
             image: "https://cdn-icons-png.flaticon.com/512/825/825500.png"

@@ -3,7 +3,7 @@ import { uploadFileToPinata, uploadJSONToPinata } from "../utils/pinata";
 import { useNavigate } from "react-router-dom";
 import { mintAndListNFT } from "../utils/contract";
 import { fetchCollections } from "../web3/fetchCollections";
-import { fetchCollectionNFTs } from "../web3/fetchNFTs";
+import { fetchCollectionNFTs } from "../web3/collectionDetailNFTs";
 
 import "./CreateModal.css";
 

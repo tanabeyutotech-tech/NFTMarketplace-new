@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { fetchCollectionNFTs } from "../web3/fetchNFTs";
+import { ethers } from "ethers";
+import { fetchCollectionNFTs } from "../web3/collectionDetailNFTs";
+import { getNFTContract } from "../web3/contract";
+import { getMarketplaceContract  } from "../web3/marketplace";
+import { MARKETPLACE_ADDRESS } from "../contracts/addresses";
+
 
 export default function CollectionDetail({minted, mintedCallBack}) {
   const { address } = useParams(); // ✅ FIX
@@ -10,12 +15,6 @@ export default function CollectionDetail({minted, mintedCallBack}) {
    async function loadNFTs() {
     try {
       const allNFTs = await fetchCollectionNFTs(address);
-
-      // const filtered = allNFTs.filter(
-      //   (nft) =>
-      //     nft.collection?.toLowerCase() === address.toLowerCase()
-      // );
-
       setNfts(allNFTs);
     } catch (err) {
       console.error("Failed to load NFTs:", err);
@@ -31,11 +30,28 @@ export default function CollectionDetail({minted, mintedCallBack}) {
   useEffect(() => {
     if(minted){
       loadNFTs();
-      console.log(`new colleciton mintedeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee`);
       mintedCallBack();
     }
 
   }, [minted]);
+
+  async function buyCollectionNFT(nft){
+        if (!window.ethereum) return;
+        console.log(`buycollection`);
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        const signer = await provider.getSigner();
+        const contract = await getNFTContract(address);
+        const marketplace = await getMarketplaceContract(MARKETPLACE_ADDRESS);
+        
+        const price = ethers.parseEther(nft.price.toString());
+        console.log(`buyNft${address}`);
+        console.log(`buyNft${nft.tokenId}`);
+        const tx = await marketplace.buyNFT(address, nft.tokenId, {
+              value: price,
+        });
+        await tx.wait();
+        await loadNFTs();
+  }
 
   if (loading) {
     return (
@@ -82,14 +98,14 @@ export default function CollectionDetail({minted, mintedCallBack}) {
               />
 
               <h3 className="text-lg font-semibold text-cyan-300">
-                {nft.name}
+                {nft.tokenId}-   {nft.name}
               </h3>
 
               <p className="text-sm text-slate-400">
                 Price: {nft.price} ETH
               </p>
 
-              <button className="w-full py-2 mt-4 font-semibold text-black rounded-xl bg-cyan-500 hover:bg-cyan-400">
+              <button className="w-full py-2 mt-4 font-semibold text-black rounded-xl bg-cyan-500 hover:bg-cyan-400" onClick={ () => { buyCollectionNFT(nft)}}>
                 Buy
               </button>
             </div>

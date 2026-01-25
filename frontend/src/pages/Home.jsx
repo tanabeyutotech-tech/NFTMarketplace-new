@@ -4,6 +4,8 @@ import NFTCardPanel from "../components/NFTCardPanel";
 import TrendCardPanel from "../components/TrendingNFTs";
 import MintListModal from "../components/MintListModal";
 import SellModal from "../components/nft/SellModal";
+import { fetchCollections } from "../web3/fetchCollections";
+
 import { useEffect, useState, useRef  } from "react";
 import { ethers } from "ethers";
 
@@ -18,6 +20,7 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
     const [selectedNFT, setSelectedNFT] = useState(null);
     const [common_NFTs, setCommonNFTs] = useState([]);
     const [myNFTs, setMydNFTs] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     
     function handleSellClick(nft) {
@@ -111,11 +114,11 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
 
     async function buyNFT(NFT) {
         if (!window.ethereum) return;
-
+        console.log(`buynftaddress: ${NFT.address}`);
         const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
         const nft = new ethers.Contract(
-            NFT_ADDRESS,
+            NFT.address,
             NFTArtifact.abi,
             signer
         );
@@ -128,9 +131,8 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
         console.log(`signer, nft: ${nft.nextTokenId()}`);
         // 3. Convert price to wei
         const price = ethers.parseEther(NFT.price.toString());
-        console.log(`price: ${NFT_ADDRESS}`);
         // // 4. Call buyNFT
-        const tx = await marketplace.buyNFT(NFT_ADDRESS, NFT.tokenId, {
+        const tx = await marketplace.buyNFT(NFT.address, NFT.tokenId, {
             value: price,
         });
         // console.log("Transaction sent:", tx.hash);
@@ -144,90 +146,95 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
     }    
 
     async function fetchListedNFTs(k) {
-        return;
+        try{
+        // return;
+        setLoading(false);
         console.log(`fetch function`);
         if (!window.ethereum) return;
 
         const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
-        const nft = new ethers.Contract(
-            NFT_ADDRESS,
-            NFTArtifact.abi,
-            signer
-        );
-
-        const marketplace = new ethers.Contract(
-            MARKETPLACE_ADDRESS,
-            MarketplaceArtifact.abi,
-            signer
-        );
-        console.log(`NFT_ADDRESS ${NFT_ADDRESS}`);
-        const nextTokenId = await nft.nextTokenId();
+        const collections = await fetchCollections();
         const common_items = [];
         const my_items = [];
-        let item;
+        await Promise.all(
+            collections.map(async(col) => {
+                console.log(`fetch promise st`);
+                
+                const nft = new ethers.Contract(
+                    col.address,
+                    NFTArtifact.abi,
+                    signer
+                );            
+                const marketplace = new ethers.Contract(
+                    MARKETPLACE_ADDRESS,
+                    MarketplaceArtifact.abi,
+                    signer
+                );
 
-        console.log(`nft itemnumber:  ${Number(nextTokenId)}`);
-        for (let tokenId = 0; tokenId < Number(nextTokenId); tokenId++) {
-        const listing = await marketplace.listings(
-            NFT_ADDRESS,
-            tokenId
+                const nextTokenId = await nft.nextTokenId();
+
+                let item;
+                console.log(`nft itemnumber:  ${Number(nextTokenId)}`);
+                for (let tokenId = 0; tokenId < Number(nextTokenId); tokenId++) {
+                    const listing = await marketplace.listings(
+                        col.address,
+                        tokenId
+                    );
+                    if (listing.price >= 0n) {
+                        console.log(`homoelistitem 1: ${listing.price}`);
+                        // console.log(`listitem2 : ${listing.seller}`);
+                        const tokenURI = await nft.tokenURI(tokenId);
+                        // console.log(`tokenURI:  ${tokenURI}`);
+                        const metadataURL = ipfsToHttp(tokenURI);
+                        // console.log(`metadataURL:  ${metadataURL}`);
+                        const metadata = await fetch(metadataURL).then(res => res.json());
+                        const owner = await nft.ownerOf(tokenId);
+                        const currentAccount = (await signer.getAddress()).toLowerCase();
+                        item =
+                        {
+                            tokenId,
+                            price: ethers.formatEther(listing.price),
+                            seller: listing.seller,
+                            image: ipfsToHttp(metadata.image),
+                            name: metadata.name,
+                            description: metadata.description,
+                            category: metadata.category,
+                            buyNow: metadata.buyNow,
+                            onAuction: metadata.onAuction,
+                            address: col.address,
+
+                        }
+                        console.log(`fetch promise md`);
+                        console.log(`item: price: ${item.price}`);
+                        console.log(`home: image: ${item.image}`);
+                        // owner.toLowerCase() === currentAccount
+                        // my_items.push(item);
+                        // common_items.push(item);
+                        if(owner.toLowerCase() === currentAccount){
+                            my_items.push(item);
+                        }
+                        else{
+                            if(item.price > 0)
+                                common_items.push(item);
+                        }
+                    }
+                }
+                console.log(`fetch promise end`);
+                
+            
+            })
         );
-        //  console.log(`item num:  ${tokenId}`);
 
-        if (listing.price >= 0n) {
-            // console.log(`listitem 1: ${listing.price}`);
-            // console.log(`listitem2 : ${listing.seller}`);
-            const tokenURI = await nft.tokenURI(tokenId);
-            // console.log(`tokenURI:  ${tokenURI}`);
-            const metadataURL = ipfsToHttp(tokenURI);
-            // console.log(`metadataURL:  ${metadataURL}`);
-            const metadata = await fetch(metadataURL).then(res => res.json());
-            const owner = await nft.ownerOf(tokenId);
-            const currentAccount = (await signer.getAddress()).toLowerCase();
-            item =
-            {
-                tokenId,
-                price: ethers.formatEther(listing.price),
-                seller: listing.seller,
-                image: ipfsToHttp(metadata.image),
-                name: metadata.name,
-                description: metadata.description,
-                category: metadata.category,
-                buyNow: metadata.buyNow,
-                onAuction: metadata.onAuction
-
-            }
-            console.log(`item: price: ${item.price}`);
-            // owner.toLowerCase() === currentAccount
-            if(owner.toLowerCase() === currentAccount){
-                my_items.push(item);
-            }
-            else{
-                if(item.price > 0)
-                    common_items.push(item);
-            }
-        }
-        }
-
-        // const jj = Number(nextTokenId);
-        // console.log(`nft property: ${common_items.at(1).price}`);
-
-        // if(my_items.length == 0){
-        //     my_items.push({
-        //         tokenId: -10,
-        //         image: "https://cdn-icons-png.flaticon.com/512/825/825500.png"
-        //     });
-        // }
-        // if(common_items.length == 0){
-        //     common_items.push({
-        //         tokenId: -10,
-        //         image: "https://cdn-icons-png.flaticon.com/512/825/825500.png"
-        //     });
-        // }
         setMydNFTs(my_items);
         setCommonNFTs(common_items);
         // console.log(`item num:  ${jj}`);
+        }
+        catch (err) {
+            console.error("fetchListedNFTs failed:", err);
+        } finally {
+            setLoading(true); // ✅ ALWAYS runs
+        }
     }    
 
     const [activeCategory, setActiveCategory] = useState("All");
@@ -346,7 +353,7 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
             </aside>
 
             {/* Main Content */}
-            <section className="flex-1 space-y-14  bg-gradient-to-br from-[#020617] via-[#020b2a] to-[#020617]">
+            {loading && <section className="flex-1 space-y-14  bg-gradient-to-br from-[#020617] via-[#020b2a] to-[#020617]">
 
                 {/* <my NFTs />         */
                    walletConected && (
@@ -429,7 +436,7 @@ export default function Home({ walletOpen, onClose, walletConected, minted, mint
                     }
                     
                 </div>
-            </section>
+            </section>}
         </div>
 
 
