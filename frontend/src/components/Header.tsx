@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
+import { ethers } from 'ethers';
+import axios from 'axios';
 import { Menu, X, Wallet, Search, User, Home, Store, Hammer, Grid3x3, Sparkles } from 'lucide-react';
 import { Button } from './Button';
+import {useEffect } from "react";
+import { Link } from "react-router-dom";
 
 interface HeaderProps {
   currentPage: string;
@@ -10,6 +14,7 @@ interface HeaderProps {
 export function Header({ currentPage, onNavigate }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [walletConnected, setWalletConnected] = useState(false);
+  const [account, setAccount] = useState(null);
 
   const navItems = [
     { id: 'home', label: 'Home', icon: Home },
@@ -19,9 +24,47 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
     { id: 'mint', label: 'Create NFT', icon: Sparkles },
   ];
 
-  const handleWalletConnect = () => {
-    setWalletConnected(!walletConnected);
+  const handleWalletConnect = async () => {
+    if(!walletConnected) 
+    {
+      console.log(`handlewalletconenct`);
+      if (!window.ethereum) {
+        alert('Install MetaMask');
+        return;
+      }
+
+      try {
+        const provider = new ethers.BrowserProvider(window.ethereum);
+        await provider.send('eth_requestAccounts', []);
+        const signer = await provider.getSigner();
+        const address = await signer.getAddress();
+
+        const message = "Confirm wallet connection";
+        const signature = await signer.signMessage(message);
+
+        console.log("Wallet confirmed:", address);
+        console.log("Signature:", signature);
+        setAccount(address);
+        setWalletConnected(true);
+
+      } catch (error) {
+        console.error('MetaMask login error:', error);
+      }
+      return;
+    }
+    else{
+      console.log(`connected`);
+      setAccount(null);
+      setWalletConnected(false);
+    }
+
+
   };
+  async function handleWalletdisConnect(){
+    console.log("Wallet disconnected");
+    setAccount(null);           // Clear stored account
+    setWalletConnected(false); // Update connection state
+  }
 
   return (
     <header className="sticky top-0 z-50 glass-strong border-b border-blue-500/20">
@@ -74,10 +117,10 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
               variant={walletConnected ? 'secondary' : 'primary'}
               size="sm"
               icon={walletConnected ? <User className="w-4 h-4" /> : <Wallet className="w-4 h-4" />}
-              onClick={walletConnected ? () => onNavigate('profile') : handleWalletConnect}
+              onClick={() => handleWalletConnect()}
               className="hidden sm:flex"
             >
-              {walletConnected ? 'Profile' : 'Connect'}
+              {walletConnected ? `${account.slice(2, 4)}...${account.slice(-4)}` : 'Connect'}
             </Button>
 
             {/* Mobile Menu Toggle */}
