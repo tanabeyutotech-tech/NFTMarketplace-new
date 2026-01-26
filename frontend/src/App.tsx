@@ -3,13 +3,14 @@ import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { HomePage } from './components/pages/HomePage';
 import { MintPage } from './components/pages/MintPage';
+import { CreateCollectionPage } from './components/pages/CreateCollectionPage';
 import { MarketplacePage } from './components/pages/MarketplacePage';
 import { NFTDetailPage } from './components/pages/NFTDetailPage';
 import { AuctionsPage } from './components/pages/AuctionsPage';
 import { CollectionsPage } from './components/pages/CollectionsPage';
 import { ProfilePage } from './components/pages/ProfilePage';
 
-type Page = 'home' | 'mint' | 'marketplace' | 'nft' | 'auctions' | 'collections' | 'collection' | 'profile';
+type Page = 'home' | 'mint' | 'marketplace' | 'nft' | 'auctions' | 'collections' | 'collection' | 'profile' |  'createcollection';
 
 interface AppState {
   currentPage: Page;
@@ -47,8 +48,9 @@ export default function App() {
       case 'auctions':
         return <AuctionsPage onNavigate={handleNavigate} />;
       case 'collections':
-      case 'collection':
         return <CollectionsPage onNavigate={handleNavigate} />;
+      case 'createcollection':
+        return <CreateCollectionPage onNavigate={handleNavigate} />;
       case 'profile':
         return <ProfilePage onNavigate={handleNavigate} />;
       default:

@@ -22,6 +22,7 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
     { id: 'auctions', label: 'Auctions', icon: Hammer },
     { id: 'collections', label: 'Collections', icon: Grid3x3 },
     { id: 'mint', label: 'Create NFT', icon: Sparkles },
+    { id: 'createcollection', label: 'Create Collection', icon: Sparkles },
   ];
 
   const handleWalletConnect = async () => {

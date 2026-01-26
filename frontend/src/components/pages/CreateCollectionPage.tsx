@@ -6,7 +6,7 @@ interface MintPageProps {
   onNavigate: (page: string) => void;
 }
 
-export function MintPage({ onNavigate }: MintPageProps) {
+export function CreateCollectionPage({ onNavigate }: MintPageProps) {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -38,7 +38,7 @@ export function MintPage({ onNavigate }: MintPageProps) {
       {/* Header */}
       <div className="mb-12">
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 neon-text">
-          Create New NFT
+          Create New Collection
         </h1>
         <p className="text-xl text-gray-400">
           Mint your digital creation on the blockchain
