@@ -73,25 +73,8 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
 
                 </div>
                 <p className="text-white font-medium mb-2">
-                  Drag & Drop or Click to Upload
+                  Sellect collection Image
                 </p>
-                <p className="text-gray-400 text-sm mb-4">
-                  PNG, JPG, GIF, MP4, MP3, WEBP. Max 100MB
-                </p>
-                <div className="flex gap-3 justify-center">
-                  <div className="glass px-3 py-2 rounded-lg flex items-center gap-2">
-                    <ImageIcon className="w-4 h-4 text-blue-400" />
-                    <span className="text-xs text-gray-300">Image</span>
-                  </div>
-                  <div className="glass px-3 py-2 rounded-lg flex items-center gap-2">
-                    <Video className="w-4 h-4 text-blue-400" />
-                    <span className="text-xs text-gray-300">Video</span>
-                  </div>
-                  <div className="glass px-3 py-2 rounded-lg flex items-center gap-2">
-                    <Music className="w-4 h-4 text-blue-400" />
-                    <span className="text-xs text-gray-300">Audio</span>
-                  </div>
-                </div>
               </div>
             </label>
           </div>
@@ -103,91 +86,13 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
                 <span className="text-white font-semibold mb-2 block">Title *</span>
                 <input
                   type="text"
-                  placeholder="e.g. Cyber Dreams #001"
+                  placeholder="e.g. Cyber Dream"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   className="w-full glass px-4 py-3 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   required
                 />
               </label>
-            </div>
-
-            {/* Description */}
-            <div className="glass-strong rounded-2xl p-6">
-              <label className="block">
-                <span className="text-white font-semibold mb-2 block">Description</span>
-                <textarea
-                  placeholder="Tell the story of your NFT..."
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows={4}
-                  className="w-full glass px-4 py-3 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                />
-              </label>
-            </div>
-
-            {/* Category */}
-            <div className="glass-strong rounded-2xl p-6">
-              <label className="block">
-                <span className="text-white font-semibold mb-2 block">Category</span>
-                <select
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full glass px-4 py-3 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="art">Art</option>
-                  <option value="photography">Photography</option>
-                  <option value="music">Music</option>
-                  <option value="gaming">Gaming</option>
-                  <option value="sports">Sports</option>
-                  <option value="collectibles">Collectibles</option>
-                </select>
-              </label>
-            </div>
-
-            {/* Properties */}
-            <div className="glass-strong rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-white font-semibold flex items-center gap-2">
-                  <File className="w-5 h-5 text-blue-400" />
-                  Properties
-                </span>
-                <button
-                  type="button"
-                  onClick={addProperty}
-                  className="text-blue-400 hover:text-blue-300 text-sm font-medium"
-                >
-                  + Add Property
-                </button>
-              </div>
-              <div className="space-y-3">
-                {properties.map((prop, index) => (
-                  <div key={index} className="grid grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      placeholder="Trait (e.g. Background)"
-                      value={prop.trait}
-                      onChange={(e) => {
-                        const newProps = [...properties];
-                        newProps[index].trait = e.target.value;
-                        setProperties(newProps);
-                      }}
-                      className="glass px-4 py-2 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Value (e.g. Blue)"
-                      value={prop.value}
-                      onChange={(e) => {
-                        const newProps = [...properties];
-                        newProps[index].value = e.target.value;
-                        setProperties(newProps);
-                      }}
-                      className="glass px-4 py-2 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                    />
-                  </div>
-                ))}
-              </div>
             </div>
 
             {/* Blockchain */}
@@ -248,7 +153,7 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
               className="w-full"
               icon={<Zap className="w-5 h-5" />}
             >
-              Mint NFT
+              Create Collection
             </Button>
           </form>
         </div>
@@ -259,17 +164,15 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
             <h3 className="text-white font-semibold mb-4">Preview</h3>
             <div className="glass rounded-xl overflow-hidden mb-4">
               <div className="aspect-square bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center">
-                <ImageIcon className="w-24 h-24 text-white/30" />
+                {/* <ImageIcon className="w-24 h-24 text-white/30" /> */}
+                { preview && (<img src={preview} className='w-full h-full border-none'></img>)}
               </div>
             </div>
             <div className="space-y-4">
               <div>
                 <h4 className="text-lg font-semibold text-white mb-2">
-                  {formData.title || 'Untitled NFT'}
+                  {formData.title || 'Untitled Collection'}
                 </h4>
-                <p className="text-gray-400 text-sm">
-                  {formData.description || 'No description yet...'}
-                </p>
               </div>
               
               <div className="pt-4 border-t border-blue-500/20">
@@ -287,10 +190,7 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
                   <span className="text-gray-400">Blockchain</span>
                   <span className="text-white capitalize">{formData.blockchain}</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Category</span>
-                  <span className="text-white capitalize">{formData.category}</span>
-                </div>
+
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Royalties</span>
                   <span className="text-white">{formData.royalties}%</span>
