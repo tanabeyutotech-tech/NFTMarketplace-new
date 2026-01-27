@@ -13,8 +13,8 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
   const [formData, setFormData] = useState({
     title: '',
     symbol: 'ETH',
-    // royalties: 10,
-    image: '',
+    imageFile: '',
+    imageName: '',
   });
   const [properties, setProperties] = useState([{ trait: '', value: '' }]);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -22,10 +22,13 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
   const [loading, setLoading] = useState(false);
 
   const handleCreateCollection = async (e: React.FormEvent) => {
-    // return;
+    console.log(`imagename:${formData.imageName}`);
+    console.log(`imagefile:${formData.imageFile}`);
     e.preventDefault();
+    if(!formData.imageName) return;
+
     setLoading(true);
-    const collectionImageUrl = await uploadFileToPinata(collectionImage);
+    const collectionImageUrl = await uploadFileToPinata(formData.imageName);
     const factory = await getFactoryContract(NFT_FACTORY_ADDRESS);
 
     // deploy new NFT collection
@@ -80,8 +83,11 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
                       hidden
                       accept="image/*"
                       onChange={(e) => {
-                        setCollectionImage(e.target.files[0]);
-                        setFormData({ ...formData, image: (URL.createObjectURL(e.target.files[0])) });
+                        // setCollectionImage(e.target.files[0]);
+                        setFormData({ ...formData, 
+                          imageName: e.target.files[0],
+                          imageFile: (URL.createObjectURL(e.target.files[0]))
+                        });
                       }}
                     />
                   </label>
@@ -135,11 +141,6 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
                 </div>
               </label>
             </div>
-
-            
-
-         
-
             {/* Submit */}
             <Button
               type="submit"
@@ -160,7 +161,7 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
             <div className="glass rounded-xl overflow-hidden mb-4">
               <div className="aspect-square bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center">
                 {/* <ImageIcon className="w-24 h-24 text-white/30" /> */}
-                { formData.image && (<img src={formData.image} className='w-full h-full border-none'></img>)}
+                { formData.imageFile && (<img src={formData.imageFile} className='w-full h-full border-none'></img>)}
               </div>
             </div>
             <div className="space-y-4">

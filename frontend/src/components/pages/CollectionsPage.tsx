@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TrendingUp, Grid3x3, Search } from 'lucide-react';
 import { Button } from '../Button';
 import { mockCollections } from '../../data/mockData';
+import { fetchCollections } from "../../js/web3/fetchCollections";
 
 interface CollectionsPageProps {
   onNavigate: (page: string, id?: string) => void;
@@ -10,11 +11,25 @@ interface CollectionsPageProps {
 export function CollectionsPage({ onNavigate }: CollectionsPageProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('volume');
+  const [collections, setCollections] = useState([]);
 
   const filteredCollections = mockCollections.filter((collection) =>
     collection.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     collection.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  async function loadCollections() {
+    try {
+      const data = await fetchCollections();
+      setCollections(data);
+    } catch (err) {
+      console.error(err);
+    } 
+  }
+
+  useEffect(() => {
+    loadCollections();
+  }, [ ])
 
   return (
     <div className="animate-fade-in">
