@@ -20,12 +20,26 @@ export function CollectionsPage({ onNavigate }: CollectionsPageProps) {
 
   async function loadCollections() {
     try {
-      const data = await fetchCollections();
-      setCollections(data);
+      const collectionDatas = await fetchCollections();
+      setCollections(collectionDatas);
+
+      collectionDatas.forEach(item => {
+        const exists = mockCollections.some(
+          mockItem => mockItem.id === item.id
+        );
+        if (!exists) {
+          mockCollections.push(item);
+        }
+      })
+      // data.map(item => {
+      //   mockCollections.push(item);
+      //   console.log(`item1`);
+      // })
     } catch (err) {
       console.error(err);
     } 
   }
+  
 
   useEffect(() => {
     loadCollections();
@@ -99,7 +113,7 @@ export function CollectionsPage({ onNavigate }: CollectionsPageProps) {
         <div className="glass-strong rounded-2xl p-6">
           <Grid3x3 className="w-8 h-8 text-blue-400 mb-3" />
           <p className="text-3xl font-bold text-white mb-1">
-            {mockCollections.reduce((acc, col) => acc + col.items, 0)}
+            {/* {mockCollections.reduce((acc, col) => acc + col.items, 0)} */}
           </p>
           <p className="text-gray-400">Total Items</p>
         </div>

@@ -210,54 +210,7 @@ export const mockNFTs: NFT[] = [
 ];
 
 export const mockCollections: Collection[] = [
-  {
-    id: 'col-1',
-    name: 'Cyber Dreams Collection',
-    description: 'A curated collection of cyberpunk-inspired digital masterpieces.',
-    coverImage: 'https://images.unsplash.com/photo-1634655685926-944d0254af90?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjeWJlcnB1bmslMjBuZW9uJTIwZGlnaXRhbHxlbnwxfHx8fDE3NjkzMzU5NTF8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    profileImage: 'https://images.unsplash.com/photo-1634655685926-944d0254af90?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjeWJlcnB1bmslMjBuZW9uJTIwZGlnaXRhbHxlbnwxfHx8fDE3NjkzMzU5NTF8MA&ixlib=rb-4.1.0&q=80&w=400',
-    creator: {
-      name: 'NeonArtist',
-      avatar: 'https://images.unsplash.com/photo-1595745688820-1a8bca9dd00f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMHBlcnNvbiUyMGNyZWF0aXZlfGVufDF8fHx8MTc2OTMzNTk1NHww&ixlib=rb-4.1.0&q=80&w=400',
-      verified: true,
-    },
-    items: 128,
-    floorPrice: 1.8,
-    volume: 342.5,
-    verified: true,
-  },
-  {
-    id: 'col-2',
-    name: 'Abstract Visions',
-    description: 'Pushing the boundaries of abstract digital art.',
-    coverImage: 'https://images.unsplash.com/photo-1715583622581-3245cefe117d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGdyYWRpZW50JTIwYmx1ZXxlbnwxfHx8fDE3NjkzMzE3MzJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    profileImage: 'https://images.unsplash.com/photo-1715583622581-3245cefe117d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGdyYWRpZW50JTIwYmx1ZXxlbnwxfHx8fDE3NjkzMzE3MzJ8MA&ixlib=rb-4.1.0&q=80&w=400',
-    creator: {
-      name: 'DigitalDreamer',
-      avatar: 'https://images.unsplash.com/photo-1595745688820-1a8bca9dd00f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMHBlcnNvbiUyMGNyZWF0aXZlfGVufDF8fHx8MTc2OTMzNTk1NHww&ixlib=rb-4.1.0&q=80&w=400',
-      verified: true,
-    },
-    items: 76,
-    floorPrice: 2.3,
-    volume: 189.7,
-    verified: true,
-  },
-  {
-    id: 'col-3',
-    name: 'Cosmic Wonders',
-    description: 'Explore the universe through stunning space-themed NFTs.',
-    coverImage: 'https://images.unsplash.com/photo-1709408635158-8d735f0395c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGFjZSUyMGdhbGF4eSUyMG5lYnVsYXxlbnwxfHx8fDE3NjkyNzA3MTl8MA&ixlib=rb-4.1.0&q=80&w=1080',
-    profileImage: 'https://images.unsplash.com/photo-1709408635158-8d735f0395c4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGFjZSUyMGdhbGF4eSUyMG5lYnVsYXxlbnwxfHx8fDE3NjkyNzA3MTl8MA&ixlib=rb-4.1.0&q=80&w=400',
-    creator: {
-      name: 'SpaceArtist',
-      avatar: 'https://images.unsplash.com/photo-1595745688820-1a8bca9dd00f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwb3J0cmFpdCUyMHBlcnNvbiUyMGNyZWF0aXZlfGVufDF8fHx8MTc2OTMzNTk1NHww&ixlib=rb-4.1.0&q=80&w=400',
-      verified: true,
-    },
-    items: 245,
-    floorPrice: 3.5,
-    volume: 567.2,
-    verified: true,
-  },
+  
 ];
 
 export const mockAuctions: Auction[] = [

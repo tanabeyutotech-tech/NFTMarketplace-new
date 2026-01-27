@@ -3,6 +3,7 @@ import NFTArtifact from "../../contracts/NFT.json";
 import { NFT_FACTORY_ADDRESS } from "../../contracts/addresses";
 
 import { getFactoryContract } from "./factory";
+// import { verify } from "node:crypto";
 
 export async function fetchCollections() {
   if (!window.ethereum) throw new Error("No wallet");
@@ -20,6 +21,7 @@ export async function fetchCollections() {
         "https://gateway.pinata.cloud/ipfs/"
     );
   }
+  console.log(`collectionnum:${addresses.length}`);
   return Promise.all(
     
     addresses.map(async (addr) => {
@@ -34,14 +36,22 @@ export async function fetchCollections() {
         console.log(`creator avatar: ${await nft.creatorAvatar()}`);
       
       return {
-        address: addr,
+        id: addr,
         name: await nft.collectionName(),
         symbol: await nft.collectionSymbol(),
-        coverImageUrl: ipfsToHttp(await nft.collectionCover()),
+        coverImage: ipfsToHttp(await nft.collectionCover()),
         description: await nft.collectionDescription(),
-        profileImageUrl: ipfsToHttp(await nft.profileImage()),
-        creatorName: await nft.creatorName(),
-        creatorAvatarUrl: ipfsToHttp(await nft.creatorAvatar())
+        profileImage: ipfsToHttp(await nft.profileImage()),
+        creator: {
+          name: await nft.creatorName(),
+          avatar: ipfsToHttp(await nft.creatorAvatar()),
+          verified: true,
+        },
+        items: Number(await nft.nextTokenId()),
+        floorPrice: 3.5,
+        volume: 567.2,
+        verified: true,
+
 
       };
     })

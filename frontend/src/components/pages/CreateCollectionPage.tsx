@@ -220,14 +220,14 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
                     <div className="w-10 h-10 gradient-blue rounded-full">
                       <label className=' cursor-pointer '>
                         <div className="w-full h-full">
-                            {profileImageFile && <img src={profileImageFile} className='w-full h-full rounded-full'></img>}
+                            {creatorAvatarFile && <img src={creatorAvatarFile} className='w-full h-full rounded-full'></img>}
                             <input
                               type="file"
                               hidden
                               accept="image/*"
                               onChange={(e) => {
-                                setFormData({ ...formData, profileImagePath: e.target.files[0]});
-                                setProfileImageFile((URL.createObjectURL(e.target.files[0])));
+                                setFormData({ ...formData, creatorAvatarPath: e.target.files[0]});
+                                setAvatarFile((URL.createObjectURL(e.target.files[0])));
                               }}
                             />
                         </div>
@@ -242,15 +242,15 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
                     <div className="w-10 h-10 gradient-blue rounded-full" >
                       <label className=' cursor-pointer '>
                         <div className="w-full h-full">
-                            {creatorAvatarFile && <img src={creatorAvatarFile} className='w-full h-full rounded-full'></img>}
+                            { profileImageFile && <img src={profileImageFile} className='w-full h-full rounded-full'></img>}
                             <input
                               type="file"
                               hidden
                               accept="image/*"
                               onChange={(e) => {
                                 // setCollectionImage(e.target.files[0]);
-                                setFormData({ ...formData, creatorAvatarPath: e.target.files[0]});
-                                setAvatarFile((URL.createObjectURL(e.target.files[0])))
+                                setFormData({ ...formData, profileImagePath: e.target.files[0]});
+                                setProfileImageFile((URL.createObjectURL(e.target.files[0])))
                               }}
                             />
                         </div>
