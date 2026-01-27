@@ -28,15 +28,21 @@ export async function fetchCollections() {
         NFTArtifact.abi,
         signer
       );
-        console.log(`collection data: ${await nft.collectionName()}`);
-        console.log(`collection symbol: ${await nft.collectionSymbol()}`);
-        console.log(`collection image: ${await nft.collectionCover()}`);
+        console.log(`collection description: ${await nft.collectionDescription()}`);
+        console.log(`profileimage: ${await nft.profileImage()}`);
+        console.log(`creator name: ${await nft.creatorName()}`);
+        console.log(`creator avatar: ${await nft.creatorAvatar()}`);
       
       return {
         address: addr,
         name: await nft.collectionName(),
         symbol: await nft.collectionSymbol(),
         coverImageUrl: ipfsToHttp(await nft.collectionCover()),
+        description: await nft.collectionDescription(),
+        profileImageUrl: ipfsToHttp(await nft.profileImage()),
+        creatorName: await nft.creatorName(),
+        creatorAvatarUrl: ipfsToHttp(await nft.creatorAvatar())
+
       };
     })
   );

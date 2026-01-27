@@ -12,30 +12,41 @@ interface MintPageProps {
 export function CreateCollectionPage({ onNavigate }: MintPageProps) {
   const [formData, setFormData] = useState({
     title: '',
+    description: ',',
     symbol: 'ETH',
-    imageFile: '',
-    imageName: '',
+    coverImagePath: '',
+    profileImagePath: '',
+    creatorName: '',
+    creatorAvatarPath: '',
   });
   const [properties, setProperties] = useState([{ trait: '', value: '' }]);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [collectionImage, setCollectionImage] = useState(null);
+  const [coverImageFile, setCoverImageFile] = useState(null);
+  const [profileImageFile, setProfileImageFile] = useState(null);
+  const [creatorAvatarFile, setAvatarFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleCreateCollection = async (e: React.FormEvent) => {
-    console.log(`imagename:${formData.imageName}`);
-    console.log(`imagefile:${formData.imageFile}`);
+    console.log(`coverImagePath:${formData.coverImagePath}`);
+    console.log(`coverImageFile:${coverImageFile}`);
     e.preventDefault();
-    if(!formData.imageName) return;
+    if(!formData.coverImagePath) return;
 
     setLoading(true);
-    const collectionImageUrl = await uploadFileToPinata(formData.imageName);
+    const collectionImageUrl = await uploadFileToPinata(formData.coverImagePath);
+    const profileImageUrl = await uploadFileToPinata(formData.profileImagePath);
+    const avatarImageUrl = await uploadFileToPinata(formData.creatorAvatarPath);
     const factory = await getFactoryContract(NFT_FACTORY_ADDRESS);
 
     // deploy new NFT collection
     const tx = await factory.createCollection(
       formData.title,
       formData.symbol,
-      collectionImageUrl
+      collectionImageUrl,
+      formData.description,
+      profileImageUrl,
+      formData.creatorName,
+      avatarImageUrl
     );    
     await tx.wait();
     setShowSuccess(true);
@@ -84,10 +95,8 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
                       accept="image/*"
                       onChange={(e) => {
                         // setCollectionImage(e.target.files[0]);
-                        setFormData({ ...formData, 
-                          imageName: e.target.files[0],
-                          imageFile: (URL.createObjectURL(e.target.files[0]))
-                        });
+                        setFormData({ ...formData, coverImagePath: e.target.files[0]});
+                        setCoverImageFile(URL.createObjectURL(e.target.files[0]));
                       }}
                     />
                   </label>
@@ -98,6 +107,9 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
                 </p>
               </div>
             </label>
+
+
+            
           </div>
 
           <form onSubmit={handleCreateCollection} className="space-y-6">
@@ -115,6 +127,35 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
                 />
               </label>
             </div>
+
+            {/* Creator */}
+            <div className="glass-strong rounded-2xl p-6">
+              <label className="block">
+                <span className="text-white font-semibold mb-2 block">Creator *</span>
+                <input
+                  type="text"
+                  placeholder="e.g. Cyber Dream"
+                  value={formData.creatorName}
+                  onChange={(e) => setFormData({ ...formData, creatorName: e.target.value })}
+                  className="w-full glass px-4 py-3 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </label>
+            </div>
+
+           {/* Description */}
+            <div className="glass-strong rounded-2xl p-6">
+              <label className="block">
+                <span className="text-white font-semibold mb-2 block">Description</span>
+                <textarea
+                  placeholder="Tell the story of your NFT..."
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  rows={4}
+                  className="w-full glass px-4 py-3 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                />
+              </label>
+            </div>            
 
             {/* Blockchain */}
             <div className="glass-strong rounded-2xl p-6">
@@ -161,7 +202,7 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
             <div className="glass rounded-xl overflow-hidden mb-4">
               <div className="aspect-square bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center">
                 {/* <ImageIcon className="w-24 h-24 text-white/30" /> */}
-                { formData.imageFile && (<img src={formData.imageFile} className='w-full h-full border-none'></img>)}
+                { coverImageFile && (<img src={coverImageFile} className='w-full h-full border-none'></img>)}
               </div>
             </div>
             <div className="space-y-4">
@@ -169,6 +210,59 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
                 <h4 className="text-lg font-semibold text-white mb-2">
                   {formData.title || 'Untitled Collection'}
                 </h4>
+                <p className="text-gray-400 text-sm">
+                  {formData.description || 'No description yet...'}
+                </p>
+              </div>
+              <div className="flex pt-4 border-t gap-30 border-blue-500/20">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="flex item-center gap-2 mb-3">
+                    <div className="w-10 h-10 gradient-blue rounded-full">
+                      <label className=' cursor-pointer '>
+                        <div className="w-full h-full">
+                            {profileImageFile && <img src={profileImageFile} className='w-full h-full rounded-full'></img>}
+                            <input
+                              type="file"
+                              hidden
+                              accept="image/*"
+                              onChange={(e) => {
+                                setFormData({ ...formData, profileImagePath: e.target.files[0]});
+                                setProfileImageFile((URL.createObjectURL(e.target.files[0])));
+                              }}
+                            />
+                        </div>
+                      </label>
+                    </div>
+                    <div >
+                      <p className="text-xs text-gray-400">Creator</p>
+                      <p className="text-sm text-white font-medium">{formData.creatorName || "you"}</p>
+                    </div>      
+                  </div>
+                  <div className="flex item-center gap-2 mb-3">
+                    <div className="w-10 h-10 gradient-blue rounded-full" >
+                      <label className=' cursor-pointer '>
+                        <div className="w-full h-full">
+                            {creatorAvatarFile && <img src={creatorAvatarFile} className='w-full h-full rounded-full'></img>}
+                            <input
+                              type="file"
+                              hidden
+                              accept="image/*"
+                              onChange={(e) => {
+                                // setCollectionImage(e.target.files[0]);
+                                setFormData({ ...formData, creatorAvatarPath: e.target.files[0]});
+                                setAvatarFile((URL.createObjectURL(e.target.files[0])))
+                              }}
+                            />
+                        </div>
+                      </label>                    
+                    </div>
+                    <div className="h-10 flex items-center">
+                      <p className="text-sm text-white font-medium ">Profile</p>
+                    </div>   
+                  </div>
+
+                </div>
+
               </div>
               <div className="pt-4 border-t border-blue-500/20 space-y-2">
                 <div className="flex justify-between text-sm">

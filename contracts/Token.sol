@@ -12,12 +12,21 @@ contract NFT is ERC721URIStorage, Ownable {
     string public collectionSymbol;
     string public collectionCover;
 
+    string public collectionDescription;
+    string public profileImage;
+    string public creatorName;
+    string public creatorAvatar;
+
     event Minted(address indexed to, uint256 indexed tokenId, string tokenURI);
 
     constructor(
         string memory _name,
         string memory _symbol,
         string memory _cover,
+        string memory _description,
+        string memory _profile,
+        string memory _creatorname,
+        string memory _avatar,
         address _creator
     )
         ERC721(_name, _symbol)
@@ -26,6 +35,10 @@ contract NFT is ERC721URIStorage, Ownable {
         collectionName = _name;
         collectionSymbol = _symbol;
         collectionCover = _cover;
+        collectionDescription = _description;
+        profileImage = _profile;
+        creatorName = _creatorname;
+        creatorAvatar = _avatar;
     }
 
     function getCollectionName() external view returns(string memory) {
