@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { uploadFileToPinata } from "../../js/pinata";
+import { getFactoryContract } from "../../js/web3/factory";
+import { NFT_FACTORY_ADDRESS } from "../../contracts/addresses";
 import { Upload, Image as ImageIcon, Video, Music, File, Info, Zap, Check } from 'lucide-react';
 import { Button } from '../Button';
 
@@ -9,24 +12,36 @@ interface MintPageProps {
 export function CreateCollectionPage({ onNavigate }: MintPageProps) {
   const [formData, setFormData] = useState({
     title: '',
-    description: '',
-    category: 'art',
-    blockchain: 'ethereum',
-    royalties: 10,
-    supply: 1,
+    symbol: 'ETH',
+    // royalties: 10,
+    image: '',
   });
   const [properties, setProperties] = useState([{ trait: '', value: '' }]);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [collectionImage, setCollectionImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleMint = (e: React.FormEvent) => {
+  const handleCreateCollection = async (e: React.FormEvent) => {
+    // return;
     e.preventDefault();
+    setLoading(true);
+    const collectionImageUrl = await uploadFileToPinata(collectionImage);
+    const factory = await getFactoryContract(NFT_FACTORY_ADDRESS);
+
+    // deploy new NFT collection
+    const tx = await factory.createCollection(
+      formData.title,
+      formData.symbol,
+      collectionImageUrl
+    );    
+    await tx.wait();
     setShowSuccess(true);
+
     setTimeout(() => {
       setShowSuccess(false);
-      onNavigate('marketplace');
-    }, 3000);
+      setLoading(false);
+      onNavigate('collections');
+    }, 2000);
   };
 
   const addProperty = () => {
@@ -65,8 +80,8 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
                       hidden
                       accept="image/*"
                       onChange={(e) => {
-                        setFile(e.target.files[0]);
-                        setPreview(URL.createObjectURL(e.target.files[0]));
+                        setCollectionImage(e.target.files[0]);
+                        setFormData({ ...formData, image: (URL.createObjectURL(e.target.files[0])) });
                       }}
                     />
                   </label>
@@ -79,7 +94,7 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
             </label>
           </div>
 
-          <form onSubmit={handleMint} className="space-y-6">
+          <form onSubmit={handleCreateCollection} className="space-y-6">
             {/* Title */}
             <div className="glass-strong rounded-2xl p-6">
               <label className="block">
@@ -103,13 +118,13 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
                   Blockchain
                 </span>
                 <div className="grid grid-cols-3 gap-3">
-                  {['ethereum', 'polygon', 'solana'].map((chain) => (
+                  {['ETH', 'POL', 'SOL'].map((chain) => (
                     <button
                       key={chain}
                       type="button"
-                      onClick={() => setFormData({ ...formData, blockchain: chain })}
+                      onClick={() => setFormData({ ...formData, symbol: chain })}
                       className={`glass px-4 py-3 rounded-lg transition-all ${
-                        formData.blockchain === chain
+                        formData.symbol === chain
                           ? 'bg-blue-600/30 border-2 border-blue-500'
                           : 'border border-blue-500/20 hover:bg-blue-500/10'
                       }`}
@@ -121,29 +136,9 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
               </label>
             </div>
 
-            {/* Royalties */}
-            <div className="glass-strong rounded-2xl p-6">
-              <label className="block">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-white font-semibold">Royalties (%)</span>
-                  <span className="text-blue-400 font-semibold">{formData.royalties}%</span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="20"
-                  value={formData.royalties}
-                  onChange={(e) => setFormData({ ...formData, royalties: parseInt(e.target.value) })}
-                  className="w-full"
-                />
-                <div className="flex items-start gap-2 mt-3 p-3 glass rounded-lg">
-                  <Info className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
-                  <p className="text-xs text-gray-400">
-                    Royalty percentage you'll receive on secondary sales
-                  </p>
-                </div>
-              </label>
-            </div>
+            
+
+         
 
             {/* Submit */}
             <Button
@@ -153,7 +148,7 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
               className="w-full"
               icon={<Zap className="w-5 h-5" />}
             >
-              Create Collection
+              {!loading ? "Create Collection" : "Creating" }
             </Button>
           </form>
         </div>
@@ -165,7 +160,7 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
             <div className="glass rounded-xl overflow-hidden mb-4">
               <div className="aspect-square bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center">
                 {/* <ImageIcon className="w-24 h-24 text-white/30" /> */}
-                { preview && (<img src={preview} className='w-full h-full border-none'></img>)}
+                { formData.image && (<img src={formData.image} className='w-full h-full border-none'></img>)}
               </div>
             </div>
             <div className="space-y-4">
@@ -174,27 +169,13 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
                   {formData.title || 'Untitled Collection'}
                 </h4>
               </div>
-              
-              <div className="pt-4 border-t border-blue-500/20">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-10 h-10 gradient-blue rounded-full" />
-                  <div>
-                    <p className="text-xs text-gray-400">Creator</p>
-                    <p className="text-sm text-white font-medium">You</p>
-                  </div>
-                </div>
-              </div>
-
               <div className="pt-4 border-t border-blue-500/20 space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Blockchain</span>
-                  <span className="text-white capitalize">{formData.blockchain}</span>
+                  <span className="text-white capitalize">{formData.symbol}</span>
                 </div>
 
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-400">Royalties</span>
-                  <span className="text-white">{formData.royalties}%</span>
-                </div>
+               
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-400">Estimated Gas</span>
                   <span className="text-blue-400">~0.05 ETH</span>
