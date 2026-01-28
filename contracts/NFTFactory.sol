@@ -11,26 +11,30 @@ contract NFTFactory {
         address indexed collection,
         string name,
         string symbol,
-        string cover
+        string description,
+        string creatorname,
+        string cover,
+        string profile,
+        string avatar
     );
 
     function createCollection(
         string memory name,
         string memory symbol,
-        string memory cover,
         string memory description,
-        string memory profile,
         string memory creatorname,
+        string memory cover,
+        string memory profile,
         string memory avatar
     ) external {
         // deploy new ERC721 collection
         NFT newCollection = new NFT(
             name,
             symbol,
-            cover,
             description,
-            profile,
             creatorname,
+            cover,
+            profile,
             avatar,
             msg.sender
         );
@@ -42,7 +46,11 @@ contract NFTFactory {
             address(newCollection),
             name,
             symbol,
-            cover
+            description,
+            creatorname,
+            cover,
+            profile,
+            avatar
         );
     }
 

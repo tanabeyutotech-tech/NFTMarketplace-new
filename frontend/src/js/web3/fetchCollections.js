@@ -23,37 +23,35 @@ export async function fetchCollections() {
   }
   console.log(`collectionnum:${addresses.length}`);
   return Promise.all(
-    
+
     addresses.map(async (addr) => {
       const nft = new ethers.Contract(
         addr,
         NFTArtifact.abi,
         signer
       );
-        console.log(`collection description: ${await nft.collectionDescription()}`);
-        console.log(`profileimage: ${await nft.profileImage()}`);
-        console.log(`creator name: ${await nft.creatorName()}`);
-        console.log(`creator avatar: ${await nft.creatorAvatar()}`);
+      console.log(`111111111111collection description: ${await nft.collectionSymbol()}`);
       
       return {
         id: addr,
+        address: addr,
         name: await nft.collectionName(),
         symbol: await nft.collectionSymbol(),
-        coverImage: ipfsToHttp(await nft.collectionCover()),
-        description: await nft.collectionDescription(),
         profileImage: ipfsToHttp(await nft.profileImage()),
+        description: await nft.collectionDescription(),
         creator: {
           name: await nft.creatorName(),
           avatar: ipfsToHttp(await nft.creatorAvatar()),
           verified: true,
         },
+        coverImage: ipfsToHttp(await nft.collectionCover()),
         items: Number(await nft.nextTokenId()),
         floorPrice: 3.5,
         volume: 567.2,
         verified: true,
-
-
       };
+      console.log(`111111111111collection description: ${await nft.collectionSymbol()}`);
+
     })
   );
 }

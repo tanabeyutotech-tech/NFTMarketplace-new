@@ -22,10 +22,10 @@ contract NFT is ERC721URIStorage, Ownable {
     constructor(
         string memory _name,
         string memory _symbol,
-        string memory _cover,
         string memory _description,
-        string memory _profile,
         string memory _creatorname,
+        string memory _cover,
+        string memory _profile,
         string memory _avatar,
         address _creator
     )
@@ -34,16 +34,14 @@ contract NFT is ERC721URIStorage, Ownable {
     {
         collectionName = _name;
         collectionSymbol = _symbol;
-        collectionCover = _cover;
         collectionDescription = _description;
-        profileImage = _profile;
         creatorName = _creatorname;
+        collectionCover = _cover;
+        profileImage = _profile;
         creatorAvatar = _avatar;
     }
 
-    function getCollectionName() external view returns(string memory) {
-        return collectionName;
-    }
+    
 
 
     function setMarketplace(address _marketplace) external onlyOwner {

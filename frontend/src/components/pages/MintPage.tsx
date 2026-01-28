@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Upload, Image as ImageIcon, Video, Music, File, Info, Zap, Check } from 'lucide-react';
 import { Button } from '../Button';
+import { uploadFileToPinata, uploadJSONToPinata } from "../../js/pinata";
+import { getFactoryContract } from "../../js/web3/factory";
+import { NFT_FACTORY_ADDRESS } from "../../contracts/addresses";
+import { fetchCollections } from "../../js/web3/fetchCollections";
+import { mintNFT } from "../../js/utils/contract";
 
 interface MintPageProps {
   onNavigate: (page: string) => void;
@@ -8,20 +13,48 @@ interface MintPageProps {
 
 export function MintPage({ onNavigate }: MintPageProps) {
   const [formData, setFormData] = useState({
+    collectionAddress: '',
     title: '',
     description: '',
     category: 'art',
     blockchain: 'ethereum',
     royalties: 10,
     supply: 1,
+    nftImagePath: '',
+
   });
   const [properties, setProperties] = useState([{ trait: '', value: '' }]);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [file, setFile] = useState(null);
+  const [nftImageFile, setNFTImageFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [collections, setCollections] = useState([]);
 
-  const handleMint = (e: React.FormEvent) => {
+  const handleMint = async (e: React.FormEvent) => {
+    console.log(`handlemintfunction`);
     e.preventDefault();
+
+    if(!formData.nftImagePath) return;
+    setLoading(true);
+    const collectionImageUrl = await uploadFileToPinata(formData.nftImagePath);
+    console.log(`collecitoimageurl: ${collectionImageUrl}`);
+    
+    const tokenURI = await uploadJSONToPinata({
+      name:formData.title,
+      description: formData.description,
+      image: collectionImageUrl,
+      attributes: [{ trait_type: "Category", value: formData.category }],
+    });
+    console.log(`collecitokenuri: ${tokenURI}`);
+    console.log(`collecitaddress: ${formData.collectionAddress}`);
+  
+    await mintNFT(
+      formData.collectionAddress,
+      tokenURI,
+    );
+    console.log(`collecitokenuri: ${tokenURI}`);
+    
+
     setShowSuccess(true);
     setTimeout(() => {
       setShowSuccess(false);
@@ -32,6 +65,11 @@ export function MintPage({ onNavigate }: MintPageProps) {
   const addProperty = () => {
     setProperties([...properties, { trait: '', value: '' }]);
   };
+
+  // Load collections
+  useEffect(() => {
+    fetchCollections().then(setCollections).catch(console.error);
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto animate-fade-in">
@@ -65,8 +103,8 @@ export function MintPage({ onNavigate }: MintPageProps) {
                       hidden
                       accept="image/*"
                       onChange={(e) => {
-                        setFile(e.target.files[0]);
-                        setPreview(URL.createObjectURL(e.target.files[0]));
+                        setFormData({ ...formData, nftImagePath: e.target.files[0]});
+                        setNFTImageFile(URL.createObjectURL(e.target.files[0]));
                       }}
                     />
                   </label>
@@ -97,6 +135,26 @@ export function MintPage({ onNavigate }: MintPageProps) {
           </div>
 
           <form onSubmit={handleMint} className="space-y-6">
+            {/* Collection */}
+            <div className="glass-strong rounded-2xl p-6">
+              <label className="block">
+                <span className="text-white font-semibold mb-2 block">Collection</span>
+                <select
+                  value={formData.collectionAddress}
+                  onChange={(e) => {console.log(`select${e.target.value}`); setFormData({ ...formData, collectionAddress: e.target.value })}}
+                  className="w-full glass px-4 py-3 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value=''>Select collection</option>
+                  {collections.map((c) => (
+                    <option key={c.address} value={c.address}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
             {/* Title */}
             <div className="glass-strong rounded-2xl p-6">
               <label className="block">
@@ -122,6 +180,7 @@ export function MintPage({ onNavigate }: MintPageProps) {
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={4}
                   className="w-full glass px-4 py-3 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  required
                 />
               </label>
             </div>
@@ -259,7 +318,8 @@ export function MintPage({ onNavigate }: MintPageProps) {
             <h3 className="text-white font-semibold mb-4">Preview</h3>
             <div className="glass rounded-xl overflow-hidden mb-4">
               <div className="aspect-square bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center">
-                <ImageIcon className="w-24 h-24 text-white/30" />
+                { !nftImageFile && (<ImageIcon className="w-24 h-24 text-white/30" />)}
+                {  nftImageFile && (<img src={nftImageFile} className='w-full h-full border-none'></img>)}
               </div>
             </div>
             <div className="space-y-4">

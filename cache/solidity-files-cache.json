@@ -2554,8 +2554,8 @@
       ]
     },
     "E:\\software\\blue-Marketplace Design\\contracts\\NFTFactory.sol": {
-      "lastModificationDate": 1769506065510,
-      "contentHash": "be74ec62d6b43edd78f8f2ffeff6ad1f",
+      "lastModificationDate": 1769549676050,
+      "contentHash": "453186b5434266b8a0c42d13e9bb2481",
       "sourceName": "contracts/NFTFactory.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -2592,8 +2592,8 @@
       ]
     },
     "E:\\software\\blue-Marketplace Design\\contracts\\Token.sol": {
-      "lastModificationDate": 1769505934972,
-      "contentHash": "f915a650816a2b463cdbc602b8581cef",
+      "lastModificationDate": 1769549860601,
+      "contentHash": "574a66cbfff0f2ecd5a95fcc6aa78dbe",
       "sourceName": "contracts/Token.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -3354,8 +3354,8 @@
       ]
     },
     "E:\\software\\blue-Marketplace Design\\contracts\\NFTMarketplace.sol": {
-      "lastModificationDate": 1769223212415,
-      "contentHash": "082aa118552e94aee30bf1302d52144e",
+      "lastModificationDate": 1769551146236,
+      "contentHash": "a5ab41a0ca42c059e68577b0e18bcc5e",
       "sourceName": "contracts/NFTMarketplace.sol",
       "solcConfig": {
         "version": "0.8.28",

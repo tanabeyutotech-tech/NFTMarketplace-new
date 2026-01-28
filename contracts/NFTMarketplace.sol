@@ -27,7 +27,6 @@ contract NFTMarketplace is ReentrancyGuard {
 
     event Listed(address indexed nft, uint256 indexed tokenId, address seller, uint256 price);
     event Sale(address indexed nft, uint256 indexed tokenId, address buyer, uint price);
-    // mapping(address => mapping(uint256 => Listing)) public listings;
 
     constructor(){
         owner = msg.sender;
@@ -35,12 +34,10 @@ contract NFTMarketplace is ReentrancyGuard {
 
     function ListNFT(address _nft, uint256 _tokenId, uint256 _price) external {
         require(_price > 0, "Price must be greater than zero");
-// nft, tokenid, price
         IERC721 nft = IERC721(_nft);
         require(nft.ownerOf(_tokenId) == msg.sender, "Not NFT owner");
         require(nft.isApprovedForAll(msg.sender, address(this)) || nft.getApproved(_tokenId) == address(this), 
                 "Marketplace not approved");
-        
         listings[_nft][_tokenId] = Listing(msg.sender, _price);
         emit Listed(_nft, _tokenId, msg.sender, _price);
     }
@@ -54,17 +51,12 @@ contract NFTMarketplace is ReentrancyGuard {
         uint256 fee = (msg.value * feePercent) / 1000;
         uint256 sellerAmount = msg.value - fee;
 
-        // send ETH
-        // payable(item.seller).transfer(sellerAmount);
-        // payable(owner).transfer(fee);
-
         (bool successSeller, ) = payable(item.seller).call{ value: sellerAmount }("");
         require(successSeller, "Seller payment failed");
 
         (bool successOwner, ) = payable(owner).call{ value: fee }("");
         require(successOwner, "Fee transfer failed");
 
-        // transfer NFT
         IERC721(_nft).safeTransferFrom(item.seller, msg.sender, _tokenId);
 
         delete listings[_nft][_tokenId];
@@ -84,11 +76,6 @@ contract NFTMarketplace is ReentrancyGuard {
             msg.sender,
             tokenURI
         );
-
-        // approve marketplace
-        // IToken(_nft).approve(address(this    ), tokenId);
-
-        // store listing
         listings[_nft][tokenId] = Listing({
             seller: msg.sender,
             price: price
@@ -96,5 +83,18 @@ contract NFTMarketplace is ReentrancyGuard {
 
         emit Listed(_nft, tokenId, msg.sender, price);
     }
-    
+
+    function mintNFT(
+        address _nft,
+        string calldata tokenURI
+    ) external nonReentrant{
+
+        // mint NFT for user
+        IToken(_nft).mintFromMarketplace(
+            msg.sender,
+            tokenURI
+        );
+    }
+
+
 }

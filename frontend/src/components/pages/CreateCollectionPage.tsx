@@ -12,7 +12,7 @@ interface MintPageProps {
 export function CreateCollectionPage({ onNavigate }: MintPageProps) {
   const [formData, setFormData] = useState({
     title: '',
-    description: ',',
+    description: '',
     symbol: 'ETH',
     coverImagePath: '',
     profileImagePath: '',
@@ -28,7 +28,6 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
 
   const handleCreateCollection = async (e: React.FormEvent) => {
     console.log(`coverImagePath:${formData.coverImagePath}`);
-    console.log(`coverImageFile:${coverImageFile}`);
     e.preventDefault();
     if(!formData.coverImagePath) return;
 
@@ -42,10 +41,10 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
     const tx = await factory.createCollection(
       formData.title,
       formData.symbol,
-      collectionImageUrl,
       formData.description,
-      profileImageUrl,
       formData.creatorName,
+      collectionImageUrl,
+      profileImageUrl,
       avatarImageUrl
     );    
     await tx.wait();
@@ -201,7 +200,7 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
             <h3 className="text-white font-semibold mb-4">Preview</h3>
             <div className="glass rounded-xl overflow-hidden mb-4">
               <div className="aspect-square bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center">
-                {/* <ImageIcon className="w-24 h-24 text-white/30" /> */}
+                { !coverImageFile && (<ImageIcon className="w-24 h-24 text-white/30" />)}
                 { coverImageFile && (<img src={coverImageFile} className='w-full h-full border-none'></img>)}
               </div>
             </div>
