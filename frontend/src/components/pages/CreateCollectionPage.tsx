@@ -189,7 +189,7 @@ export function CreateCollectionPage({ onNavigate }: MintPageProps) {
               className="w-full"
               icon={<Zap className="w-5 h-5" />}
             >
-              {!loading ? "Create Collection" : "Creating" }
+              {!loading ? "Create Collection" : "Creating Collection" }
             </Button>
           </form>
         </div>

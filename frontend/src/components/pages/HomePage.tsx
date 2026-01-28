@@ -3,6 +3,7 @@ import { TrendingUp, Flame, Clock, Star, ChevronLeft, ChevronRight, ArrowRight }
 import { NFTCard } from '../NFTCard';
 import { Button } from '../Button';
 import { mockNFTs, mockCollections } from '../../data/mockData';
+import { fetchMydNFTs } from "../../js/web3/fetchCollections";
 
 interface HomePageProps {
   onNavigate: (page: string, id?: string) => void;
@@ -10,6 +11,7 @@ interface HomePageProps {
 
 export function HomePage({ onNavigate }: HomePageProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [my_NFTs, setmy_NFTs] = useState([]);
   const featuredNFTs = mockNFTs.slice(0, 3);
 
   useEffect(() => {
@@ -21,6 +23,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % featuredNFTs.length);
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + featuredNFTs.length) % featuredNFTs.length);
+
+
+  useEffect(() => {
+      const my_items = fetchMydNFTs().then(setmy_NFTs).catch(console.error);
+      
+  }, []);
 
   return (
     <div className="animate-fade-in">
@@ -242,7 +250,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
           </Button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {mockNFTs.slice(4, 8).map((nft) => (
+          {my_NFTs.map((nft) => (
             <div key={nft.id} onClick={() => onNavigate('nft', nft.id)}>
               <NFTCard nft={nft} />
             </div>

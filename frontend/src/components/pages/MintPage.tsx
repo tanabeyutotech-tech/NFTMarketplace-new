@@ -21,12 +21,11 @@ export function MintPage({ onNavigate }: MintPageProps) {
     royalties: 10,
     supply: 1,
     nftImagePath: '',
-
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
   });
   const [properties, setProperties] = useState([{ trait: '', value: '' }]);
   const [showSuccess, setShowSuccess] = useState(false);
   const [nftImageFile, setNFTImageFile] = useState(null);
-  const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [collections, setCollections] = useState([]);
 
@@ -40,25 +39,27 @@ export function MintPage({ onNavigate }: MintPageProps) {
     console.log(`collecitoimageurl: ${collectionImageUrl}`);
     
     const tokenURI = await uploadJSONToPinata({
-      name:formData.title,
+      id: formData.collectionAddress,
+      title: formData.title,
       description: formData.description,
+      category: formData.category,
       image: collectionImageUrl,
+      name: 'camexlo',
+      avatar: formData.avatar,      
+      address: formData.collectionAddress,
       attributes: [{ trait_type: "Category", value: formData.category }],
     });
-    console.log(`collecitokenuri: ${tokenURI}`);
     console.log(`collecitaddress: ${formData.collectionAddress}`);
-  
     await mintNFT(
       formData.collectionAddress,
       tokenURI,
     );
     console.log(`collecitokenuri: ${tokenURI}`);
-    
-
     setShowSuccess(true);
     setTimeout(() => {
       setShowSuccess(false);
-      onNavigate('marketplace');
+      setLoading(false);
+      onNavigate('home');
     }, 3000);
   };
 
@@ -307,7 +308,7 @@ export function MintPage({ onNavigate }: MintPageProps) {
               className="w-full"
               icon={<Zap className="w-5 h-5" />}
             >
-              Mint NFT
+              {!loading ? "Mint NFT" : "Minting NFT" }
             </Button>
           </form>
         </div>

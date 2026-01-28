@@ -41,11 +41,11 @@ export function NFTCard({ nft, onLike, onBuy }: NFTCardProps) {
           <div className="flex items-center gap-3 text-white text-sm">
             <span className="flex items-center gap-1">
               <Eye className="w-4 h-4" />
-              {nft.views}
+              {/* {nft.views} */}
             </span>
             <span className="flex items-center gap-1">
               <Heart className="w-4 h-4" />
-              {nft.likes}
+              {/* {nft.likes} */}
             </span>
           </div>
         </div>
@@ -75,9 +75,9 @@ export function NFTCard({ nft, onLike, onBuy }: NFTCardProps) {
             <p className="text-xs text-gray-400">Creator</p>
             <p className="text-sm text-white truncate font-medium">
               {nft.creator.name}
-              {nft.creator.verified && (
+              {/* {nft.creator.verified && (
                 <span className="ml-1 text-blue-400">✓</span>
-              )}
+              )} */}
             </p>
           </div>
         </div>
@@ -87,7 +87,7 @@ export function NFTCard({ nft, onLike, onBuy }: NFTCardProps) {
           <div>
             <p className="text-xs text-gray-400 mb-1">Current Price</p>
             <p className="text-lg font-bold text-white">
-              {nft.price} {nft.currency}
+              {/* {nft.price} {nft.currency} */}
             </p>
           </div>
           <Button
