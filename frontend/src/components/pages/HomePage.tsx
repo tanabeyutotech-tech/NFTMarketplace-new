@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { TrendingUp, Flame, Clock, Star, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { NFTCard } from '../NFTCard';
 import { Button } from '../Button';
-import { mockNFTs, mockCollections } from '../../data/mockData';
-import { fetchMydNFTs } from "../../js/web3/fetchCollections";
+import { mockNFTs, mockCollections, myNFTs } from '../../data/mockData';
+import { fetchMydNFTs, listNFTs, fetchListedNFTs } from "../../js/web3/fetchCollections";
 
 interface HomePageProps {
   onNavigate: (page: string, id?: string) => void;
@@ -11,7 +11,8 @@ interface HomePageProps {
 
 export function HomePage({ onNavigate }: HomePageProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [my_NFTs, setmy_NFTs] = useState([]);
+  // const [my_NFTs, setmy_NFTs] = useState([]);
+  const [common_NFTs, setcommon_NFTs] = useState([]);
   const featuredNFTs = mockNFTs.slice(0, 3);
 
   useEffect(() => {
@@ -26,9 +27,21 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
 
   useEffect(() => {
-      const my_items = fetchMydNFTs().then(setmy_NFTs).catch(console.error);
-      
+      fetchMydNFTs();
+      fetchListedNFTs();
   }, []);
+
+  function onBuy(nft){
+    console.log(`onbuyfunction:${nft.address}`);
+    listNFTs(nft);
+    fetchListedNFTs();
+  }
+
+  function onList(nft, listPrice){
+    console.log(`onbuyfunction:${nft.address}`);
+    listNFTs(nft,listPrice);
+    fetchListedNFTs();
+  }
 
   return (
     <div className="animate-fade-in">
@@ -71,7 +84,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 variant="primary"
                 size="lg"
                 icon={<ArrowRight className="w-5 h-5" />}
-                onClick={() => onNavigate('nft', featuredNFTs[currentSlide].id)}
+                // onClick={() => onNavigate('nft', featuredNFTs[currentSlide].id)}
               >
                 View Details
               </Button>
@@ -156,11 +169,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
           </Button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {mockNFTs.slice(0, 4).map((nft) => (
-            <div key={nft.id} onClick={() => onNavigate('nft', nft.id)}>
+          {mockNFTs.map((nft) => (
+            <div key={nft.id} >
               <NFTCard nft={nft} />
             </div>
           ))}
+          {/* onClick={() => onNavigate('nft', nft.id)} */}
         </div>
       </section>
 
@@ -250,14 +264,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
           </Button>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {my_NFTs.map((nft) => (
-            <div key={nft.id} onClick={() => onNavigate('nft', nft.id)}>
-              <NFTCard nft={nft} />
+          {myNFTs.map((nft) => (
+            <div key={nft.id} >
+              <NFTCard nft={nft} ownership={true} onBuy={onBuy} onList={onList} />
             </div>
           ))}
         </div>
       </section>
-
+            {/* onClick={() => onNavigate('nft', nft.id)} */}
       {/* CTA Section */}
       <section className="glass-strong rounded-3xl p-12 text-center mb-20">
         <h2 className="text-4xl font-bold text-white mb-4 neon-text">

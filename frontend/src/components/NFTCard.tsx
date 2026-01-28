@@ -2,16 +2,20 @@ import React from 'react';
 import { Heart, Eye, ShoppingCart } from 'lucide-react';
 import { NFT } from '../types';
 import { Button } from './Button';
+import { useState, useEffect } from 'react';
+import { ethers } from "ethers";
 
 interface NFTCardProps {
   nft: NFT;
-  onLike?: (id: string) => void;
-  onBuy?: (id: string) => void;
+  // onLike?: (id: string) => void;
+  // onBuy?: (id: string) => void;
 }
 
-export function NFTCard({ nft, onLike, onBuy }: NFTCardProps) {
+export function NFTCard({ nft, ownership, onBuy, onList }: NFTCardProps) {
+  const [listPrice, setListPrice] = useState(0);
+  
   return (
-    <div className="glass rounded-2xl overflow-hidden hover-lift group cursor-pointer animate-fade-in">
+    <div className="glass rounded-2xl overflow-hidden hover-lift group animate-fade-in">
       {/* Image */}
       <div className="relative aspect-square overflow-hidden">
         <img
@@ -26,7 +30,7 @@ export function NFTCard({ nft, onLike, onBuy }: NFTCardProps) {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onLike?.(nft.id);
+              // onLike?.(nft.id);
             }}
             className="glass-strong p-2 rounded-full hover:bg-blue-500/30 transition-colors"
           >
@@ -81,13 +85,25 @@ export function NFTCard({ nft, onLike, onBuy }: NFTCardProps) {
             </p>
           </div>
         </div>
+        <div>
+          {ownership &&  (<input
+            type="text"
+            placeholder="e.g. Cyber Dream"
+            onChange={(e) => setListPrice(e.target.value)}
+            
+            // onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            className="w-20 h-1 mb-4 glass px-4 py-3 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            // required
+          />)}
+        </div>
 
         {/* Price & Action */}
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs text-gray-400 mb-1">Current Price</p>
             <p className="text-lg font-bold text-white">
-              {/* {nft.price} {nft.currency} */}
+              {ownership? `` : `${nft.price} ETH` }
+              {/* {nft.currency} */}
             </p>
           </div>
           <Button
@@ -95,11 +111,17 @@ export function NFTCard({ nft, onLike, onBuy }: NFTCardProps) {
             size="sm"
             icon={<ShoppingCart className="w-4 h-4" />}
             onClick={(e) => {
+
               e.stopPropagation();
-              onBuy?.(nft.id);
+              console.log(`newlistprice:${listPrice}`);
+              // console.log(`newlistprice:${ethers.formatEther(listPrice)}`);
+              if(ownership)onList(nft,listPrice);
+              else{
+                console.log(`buyfunc`);
+              }
             }}
           >
-            Buy
+            {ownership? 'List' : 'Buy'}
           </Button>
         </div>
       </div>

@@ -12,7 +12,7 @@ export function Button({
   size = 'md',
   children,
   icon,
-  className = '',
+  className = ' cursor-pointer',
   disabled,
   ...props
 }: ButtonProps) {

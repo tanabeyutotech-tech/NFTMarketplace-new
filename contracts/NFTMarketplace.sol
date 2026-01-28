@@ -90,11 +90,28 @@ contract NFTMarketplace is ReentrancyGuard {
     ) external nonReentrant{
 
         // mint NFT for user
-        IToken(_nft).mintFromMarketplace(
+        uint256 tokenId = IToken(_nft).mintFromMarketplace(
             msg.sender,
             tokenURI
         );
+        listings[_nft][tokenId] = Listing({
+            seller: msg.sender,
+            price: 0
+        });
     }
 
+    function listNFT(
+        address _nft,
+        uint256 tokenId,
+        uint256 price
+    ) external nonReentrant{
+
+        // mint NFT for user
+        listings[_nft][tokenId] = Listing({
+            seller: msg.sender,
+            price: price
+        });
+        emit Listed(_nft, tokenId, msg.sender, price);
+    }
 
 }

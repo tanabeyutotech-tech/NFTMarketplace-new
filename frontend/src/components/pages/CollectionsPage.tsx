@@ -20,17 +20,17 @@ export function CollectionsPage({ onNavigate }: CollectionsPageProps) {
 
   async function loadCollections() {
     try {
-      const collectionDatas = await fetchCollections();
-      setCollections(collectionDatas);
+      await fetchCollections();
+      // setCollections(collectionDatas);
 
-      collectionDatas.forEach(item => {
-        const exists = mockCollections.some(
-          mockItem => mockItem.id === item.id
-        );
-        if (!exists) {
-          mockCollections.push(item);
-        }
-      })
+      // mockCollections.forEach(item => {
+      //   const exists = mockCollections.some(
+      //     mockItem => mockItem.id === item.id
+      //   );
+      //   if (!exists) {
+      //     mockCollections.push(item);
+      //   }
+      // })
       // data.map(item => {
       //   mockCollections.push(item);
       //   console.log(`item1`);

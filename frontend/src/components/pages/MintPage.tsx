@@ -6,6 +6,7 @@ import { getFactoryContract } from "../../js/web3/factory";
 import { NFT_FACTORY_ADDRESS } from "../../contracts/addresses";
 import { fetchCollections } from "../../js/web3/fetchCollections";
 import { mintNFT } from "../../js/utils/contract";
+import { mockCollections } from '../../data/mockData';
 
 interface MintPageProps {
   onNavigate: (page: string) => void;
@@ -44,6 +45,7 @@ export function MintPage({ onNavigate }: MintPageProps) {
       description: formData.description,
       category: formData.category,
       image: collectionImageUrl,
+      price: 0,
       name: 'camexlo',
       avatar: formData.avatar,      
       address: formData.collectionAddress,
@@ -147,7 +149,7 @@ export function MintPage({ onNavigate }: MintPageProps) {
                   required
                 >
                   <option value=''>Select collection</option>
-                  {collections.map((c) => (
+                  {mockCollections.map((c) => (
                     <option key={c.address} value={c.address}>
                       {c.name}
                     </option>
