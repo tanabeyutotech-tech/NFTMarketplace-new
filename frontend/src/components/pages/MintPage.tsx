@@ -56,7 +56,7 @@ export function MintPage({ onNavigate }: MintPageProps) {
       formData.collectionAddress,
       tokenURI,
     );
-    console.log(`collecitokenuri: ${tokenURI}`);
+    console.log(`feedbackcollecitokenuri: ${tokenURI}`);
     setShowSuccess(true);
     setTimeout(() => {
       setShowSuccess(false);

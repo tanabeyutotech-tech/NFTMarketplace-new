@@ -118,6 +118,7 @@ export function NFTCard({ nft, ownership, onBuy, onList }: NFTCardProps) {
               if(ownership)onList(nft,listPrice);
               else{
                 console.log(`buyfunc`);
+                onBuy(nft);
               }
             }}
           >

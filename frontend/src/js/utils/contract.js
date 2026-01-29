@@ -74,11 +74,20 @@ export async function mintNFT(
     );
     const ty = await contract.setApprovalForAll(MARKETPLACE_ADDRESS, true);
     await ty.wait();
-    console.log(`collecitokenuri: ${MARKETPLACE_ADDRESS}`);
+    console.log(`tokenuri : ${tokenURI}`);
+    console.log(`setmarketplace: ${MARKETPLACE_ADDRESS}`);
+
+    console.log(`marketplaceadress: ${MARKETPLACE_ADDRESS}`);
+    console.log(`currentaccount: ${await(signer.getAddress())}`);
+    console.log(`collectionaddress: ${collectionAddress}`);
+    console.log(`tokenuri: ${tokenURI}`);
 
     const tz = await contract.setMarketplace(MARKETPLACE_ADDRESS);
     tz.wait();
-
+    console.log(`marketplaceadress: ${MARKETPLACE_ADDRESS}`);
+    console.log(`currentaccount: ${await(signer.getAddress())}`);
+    console.log(`collectionaddress: ${collectionAddress}`);
+    console.log(`tokenuri: ${tokenURI}`);
     const tx = await marketplace.mintNFT(
       collectionAddress,
       tokenURI,

@@ -3,7 +3,7 @@ import NFTArtifact from "../../contracts/NFT.json";
 import { NFT_FACTORY_ADDRESS, MARKETPLACE_ADDRESS } from "../../contracts/addresses";
 import { mockNFTs, mockCollections, myNFTs } from '../../data/mockData';
 
-import { getFactoryContract, getMarketplaceContract } from "./factory";
+import { getFactoryContract, getMarketplaceContract, getNFTContract } from "./factory";
 // import { verify } from "node:crypto";
 function ipfsToHttp(ipfsUrl) {
   if (!ipfsUrl) return "";
@@ -60,7 +60,7 @@ export async function fetchCollections() {
 }
 
 export async function fetchListedNFTs() {
-  const common_items = [];
+  let common_items = [];
   // const my_items = [];
   try{
         if (!window.ethereum) return;
@@ -68,9 +68,8 @@ export async function fetchListedNFTs() {
         const signer = await provider.getSigner();
 
         await fetchCollections();
-
-
         const marketplace = await getMarketplaceContract(MARKETPLACE_ADDRESS);
+        const currentAccount = (await signer.getAddress()).toLowerCase();
         await Promise.all(
           mockCollections.map(async(col) => {
 
@@ -80,7 +79,7 @@ export async function fetchListedNFTs() {
               signer
             );      
             const factory = await getFactoryContract(NFT_FACTORY_ADDRESS);
-            // console.log(`nftfactrory: ${NFT_FACTORY_ADDRESS}`);
+            console.log(`nftfactrory: ${NFT_FACTORY_ADDRESS}`);
             // console.log(`coladdress: ${col.address}`);
             const nextTokenId = await nft.nextTokenId();
             // console.log(`nextTokenIdinlisting: ${nextTokenId}`);
@@ -96,18 +95,13 @@ export async function fetchListedNFTs() {
                 col.address,
                 tokenId
               );
-              if (listing.price > 0n) {
+              let owner = await nft.ownerOf(tokenId);
+              if ((listing.price > 0n) && (owner.toLowerCase() !== currentAccount)) {
                   const tokenURI = await nft.tokenURI(tokenId);
                   const metadataURL = ipfsToHttp(tokenURI);
                   const metadata = await fetch(metadataURL).then(res => res.json());
-                  const owner = await nft.ownerOf(tokenId);
-                  const currentAccount = (await signer.getAddress()).toLowerCase();
                   console.log(`-2--------${ethers.formatEther(listing.price)}------------------------------------------------------`);
                   console.log(`-2--------${listing.price}------------------------------------------------------`);
-                  if(owner.toLowerCase() === currentAccount){
-                    console.log(`currentAccount:${currentAccount}`);
-                    return;
-                  }
                   item =
                   {
                       tokenId: tokenId,
@@ -123,13 +117,7 @@ export async function fetchListedNFTs() {
                       },
                       address: col.address,
                   }
-                  // if(owner.toLowerCase() === currentAccount){
-                      // my_items.push(item);
-                  // }
-                  // else{
-                  // console.log(`-1-------------------------------------------------------------------`);
-                  // if(item.price > 0){
-                      // common_items.push(item);
+
                   const exists = mockNFTs.some(nft => nft.id === item.id);
                   if (!exists) {
                     console.log(`pushed`);
@@ -141,12 +129,12 @@ export async function fetchListedNFTs() {
                     mockNFTs.at(index).price =  ethers.formatEther(listing.price);
                     console.log(`unpushed ${mockNFTs.at(index).price}`);
                   }
-                    // }
-                  // }
               }
             }
           })
         );
+        common_items = mockNFTs;
+        return common_items;
   }
   catch(err){
     console.error("fetchListedNFTs failed:", err);
@@ -156,7 +144,7 @@ export async function fetchListedNFTs() {
 
 export async function fetchMydNFTs() {
   const common_items = [];
-  // const my_items = [];
+  let my_items = [];
   try{
         if (!window.ethereum) return;
         const provider = new ethers.BrowserProvider(window.ethereum);
@@ -186,26 +174,31 @@ export async function fetchMydNFTs() {
               const owner = await nft.ownerOf(tokenId);
               const currentAccount = (await signer.getAddress()).toLowerCase();
               // console.log(`avatar: ${metadata.avatar}`);
-              item =
-              {
-                  tokenId: tokenId,
-                  id: metadata.address+tokenId,
-                  title: metadata.title,
-                  price: metadata.price,
-                  description: metadata.description,
-                  category: metadata.category,
-                  image: ipfsToHttp(metadata.image),
-                  creator: {
-                    name: metadata.name,
-                    avatar: metadata.avatar,
-                  },
-                  address: col.address,
-              }
               if(owner.toLowerCase() === currentAccount){
+                  console.log(`tolowercase = currentaccount`);
+                  console.log(`${owner}`);
+                  console.log(`1currentaccount:${await signer.getAddress()}`);
+
+                  item =
+                  {
+                      tokenId: tokenId,
+                      id: metadata.address+tokenId,
+                      title: metadata.title,
+                      price: metadata.price,
+                      description: metadata.description,
+                      category: metadata.category,
+                      image: ipfsToHttp(metadata.image),
+                      creator: {
+                        name: metadata.name,
+                        avatar: metadata.avatar,
+                      },
+                      address: col.address,
+                  }
                   // my_items.push(item);
                   const exists = myNFTs.some(nft => nft.id === item.id);
                     if (!exists) {
                       myNFTs.push(item);
+                      console.log('my nfts is pushed');
                     }
               }
               // else{
@@ -215,6 +208,8 @@ export async function fetchMydNFTs() {
             }
           })
         );
+        my_items = myNFTs;
+        return my_items;
   }
   catch(err){
     console.error("fetchListedNFTs failed:", err);
@@ -232,4 +227,24 @@ export async function listNFTs(nft, listPrice) {
   console.log(`price${nft.tokenId}`);
   await marketplace.listNFT(nft.address,nft.tokenId ,priceInWei);
   alert('listed');
+}
+
+export async function buyNFTs(nft) {
+  if (!window.ethereum) return;
+  const provider = new ethers.BrowserProvider(window.ethereum);
+  const signer = await provider.getSigner();
+  // const contract = await getNFTContract(address);
+  const marketplace = await getMarketplaceContract(MARKETPLACE_ADDRESS);
+
+  const price = ethers.parseEther(nft.price.toString());
+  console.log(`buyNft${nft.address}`);
+  console.log(`buyNft${nft.tokenId}`);
+  const tx = await marketplace.buyNFT(nft.address, nft.tokenId, {
+        value: price,
+  });
+  await tx.wait();
+  
+  await fetchMydNFTs();
+  await fetchMydNFTs();
+
 }

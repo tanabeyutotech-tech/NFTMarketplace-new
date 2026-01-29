@@ -2592,8 +2592,8 @@
       ]
     },
     "E:\\software\\blue-Marketplace Design\\contracts\\Token.sol": {
-      "lastModificationDate": 1769549860601,
-      "contentHash": "574a66cbfff0f2ecd5a95fcc6aa78dbe",
+      "lastModificationDate": 1769680265119,
+      "contentHash": "6adb7093063ff94322e003ab17aa0083",
       "sourceName": "contracts/Token.sol",
       "solcConfig": {
         "version": "0.8.28",

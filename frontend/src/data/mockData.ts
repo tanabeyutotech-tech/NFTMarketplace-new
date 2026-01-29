@@ -4,7 +4,7 @@ export const mockNFTs: NFT[] = [
   {
     id: '1',
     title: 'Cyber Dreams #001',
-    description: 'A stunning piece of digital art exploring the intersection of technology and consciousness in a neon-lit cyberpunk future.',
+    description: 'A stunning piece of digital art exploing.',
     image: 'https://images.unsplash.com/photo-1634655685926-944d0254af90?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjeWJlcnB1bmslMjBuZW9uJTIwZGlnaXRhbHxlbnwxfHx8fDE3NjkzMzU5NTF8MA&ixlib=rb-4.1.0&q=80&w=1080',
     creator: {
       name: 'NeonArtist',
@@ -42,7 +42,7 @@ export const myNFTs: NFT[] = [
   {
     id: '1',
     title: 'Cyber Dreams #001',
-    description: 'A stunning piece of digital art exploring the intersection of technology and consciousness in a neon-lit cyberpunk future.',
+    description: 'A stunning piece of digital art explori',
     image: 'https://images.unsplash.com/photo-1634655685926-944d0254af90?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjeWJlcnB1bmslMjBuZW9uJTIwZGlnaXRhbHxlbnwxfHx8fDE3NjkzMzU5NTF8MA&ixlib=rb-4.1.0&q=80&w=1080',
     creator: {
       name: 'NeonArtist',

@@ -11,7 +11,7 @@ interface HomePageProps {
 
 export function HomePage({ onNavigate }: HomePageProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
-  // const [my_NFTs, setmy_NFTs] = useState([]);
+  const [my_NFTs, setmy_NFTs] = useState([]);
   const [common_NFTs, setcommon_NFTs] = useState([]);
   const featuredNFTs = mockNFTs.slice(0, 3);
 
@@ -27,20 +27,23 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
 
   useEffect(() => {
-      fetchMydNFTs();
-      fetchListedNFTs();
+      fetchMydNFTs().then(setmy_NFTs);
+      fetchListedNFTs().then(setcommon_NFTs);
   }, []);
 
   function onBuy(nft){
     console.log(`onbuyfunction:${nft.address}`);
-    listNFTs(nft);
-    fetchListedNFTs();
+    // buyNFTs(nft);
+      fetchMydNFTs().then(setmy_NFTs);
+      fetchListedNFTs().then(setcommon_NFTs);
+
   }
 
   function onList(nft, listPrice){
     console.log(`onbuyfunction:${nft.address}`);
     listNFTs(nft,listPrice);
-    fetchListedNFTs();
+    fetchMydNFTs().then(setmy_NFTs);
+    // fetchListedNFTs();
   }
 
   return (
@@ -171,7 +174,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {mockNFTs.map((nft) => (
             <div key={nft.id} >
-              <NFTCard nft={nft} />
+              <NFTCard nft={nft} onBuy={onBuy}/>
             </div>
           ))}
           {/* onClick={() => onNavigate('nft', nft.id)} */}
@@ -245,13 +248,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </section>
 
-      {/* Newly Minted */}
+      {/* My NFTs */}
       <section className="mb-20">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-3xl font-bold text-white mb-2 flex items-center gap-3">
               <Clock className="w-8 h-8 text-blue-400" />
-              Newly Minted
+              My NFTs
             </h2>
             <p className="text-gray-400">Fresh drops from talented creators</p>
           </div>
@@ -266,7 +269,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {myNFTs.map((nft) => (
             <div key={nft.id} >
-              <NFTCard nft={nft} ownership={true} onBuy={onBuy} onList={onList} />
+              <NFTCard nft={nft} ownership={true}  onList={onList} />
             </div>
           ))}
         </div>

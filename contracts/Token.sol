@@ -44,7 +44,7 @@ contract NFT is ERC721URIStorage, Ownable {
     
 
 
-    function setMarketplace(address _marketplace) external onlyOwner {
+    function setMarketplace(address _marketplace) external  {
         marketplace = _marketplace;
     }
 

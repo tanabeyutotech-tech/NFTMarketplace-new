@@ -21,6 +21,7 @@ export function CollectionsPage({ onNavigate }: CollectionsPageProps) {
   async function loadCollections() {
     try {
       await fetchCollections();
+      setCollections(['ll']);
       // setCollections(collectionDatas);
 
       // mockCollections.forEach(item => {

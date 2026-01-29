@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, SlidersHorizontal, Grid3x3, List, TrendingUp, DollarSign, Clock } from 'lucide-react';
 import { NFTCard } from '../NFTCard';
 import { Button } from '../Button';
 import { mockNFTs } from '../../data/mockData';
+import { fetchMydNFTs, listNFTs, fetchListedNFTs } from "../../js/web3/fetchCollections";
 
 interface MarketplacePageProps {
   onNavigate: (page: string, id?: string) => void;
@@ -13,8 +14,10 @@ export function MarketplacePage({ onNavigate }: MarketplacePageProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('trending');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 10 });
+  const [priceRange, setPriceRange] = useState({ min: 0, max: 10000 });
   const [showFilters, setShowFilters] = useState(false);
+  const [my_NFTs, setmy_NFTs] = useState([]);
+  const [common_NFTs, setcommon_NFTs] = useState([]);
 
   const categories = ['all', 'art', 'photography', 'abstract', 'space', 'gaming'];
   const sortOptions = [
@@ -33,6 +36,10 @@ export function MarketplacePage({ onNavigate }: MarketplacePageProps) {
     return matchesSearch && matchesCategory && matchesPrice;
   });
 
+  useEffect(() => {
+        fetchMydNFTs().then(setmy_NFTs);
+        fetchListedNFTs().then(setcommon_NFTs);
+    }, []);
   return (
     <div className="animate-fade-in">
       {/* Header */}
@@ -135,7 +142,7 @@ export function MarketplacePage({ onNavigate }: MarketplacePageProps) {
                   type="number"
                   placeholder="Max"
                   value={priceRange.max}
-                  onChange={(e) => setPriceRange({ ...priceRange, max: parseFloat(e.target.value) || 10 })}
+                  onChange={(e) => setPriceRange({ ...priceRange, max: parseFloat(e.target.value) || 10000 })}
                   className="glass px-4 py-2 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 w-24"
                 />
               </div>
